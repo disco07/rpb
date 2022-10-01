@@ -1,12 +1,13 @@
 use std::fs::File;
 use std::io::Write;
 use std::rc::Rc;
-use std::time;
+use std::{io, time};
+use std::time::Instant;
 
 struct Bar {
     state: State,
     options: Option,
-    theme: Theme
+    theme: Theme,
 }
 
 struct State {
@@ -22,11 +23,59 @@ struct Option {
 
 struct Theme {
     rate: String,
-    bar_type: String,
-    bar_start: String,
-    bar_end: String,
-    bar_width: String,
+    bar_type: char,
+    bar_start: char,
+    bar_end: char,
+    bar_width: isize,
+}
 
+impl State {
+    fn new(max: i64) -> State {
+        Self {
+            current: 0,
+            percent: get_percent(0, max),
+            current_graph_rate: 0
+        }
+    }
+}
+
+impl Theme {
+    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: isize,) -> Theme {
+        Self {
+            rate: "".to_string(),
+            bar_type,
+            bar_start,
+            bar_end,
+            bar_width
+        }
+    }
+}
+
+impl Option {
+    fn new(total: i64, time: time) -> Option {
+        Self {
+            total,
+            start_time: time
+        }
+    }
+}
+
+impl Bar {
+    fn new(max: i64) -> Self {
+        Self {
+            state: State::new(max),
+            options: Option::new(max, Instant::now()),
+            theme: Theme::new('█', '[', ']', 50)
+        }
+    }
+
+    fn add(num: isize) -> io::Error {
+
+    }
+}
+
+fn get_percent(current: i64, total: i64) -> f64 {
+    100 * (current as f64)/(total as f64)
 }
 
 fn main() {}
