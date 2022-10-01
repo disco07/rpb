@@ -39,10 +39,6 @@ impl State {
             current_graph_rate: 0,
         }
     }
-
-    fn set_percent(&mut self, percent: f64) {
-        &self.percent = percent
-    }
 }
 
 impl Theme {
@@ -76,33 +72,29 @@ impl Bar {
     }
 
     fn render(&mut self) {
-        let last = &self.state.percent;
-        &self.state.percent = get_percent(&self.state.current, &self.option.total).borrow();
-        let last_graph_rate = &self.state.current_graph_rate;
-        &self.state.current_graph_rate = &self.state.percent / 100.0 * (&self.theme.bar_width);
-        if &self.state.percent != last {
-            let n: usize = (&self.state.current_graph_rate - *last_graph_rate) as usize;
-            &self.theme.rate += format!("{:-^1$}", &self.theme.bar_type, n);
+        let last = self.state.percent;
+        self.state.percent = get_percent(&self.state.current, &self.option.total);
+        let last_graph_rate = self.state.current_graph_rate;
+        self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
+        if self.state.percent != last {
+            let n: usize = (self.state.current_graph_rate - last_graph_rate) as usize;
+
+            self.theme.rate.push_str("#");
         }
-        let width = &self.theme.bar_width;
-        println!("\r{}{:>width$}{}{}{}%",
-                 &self.theme.bar_start,
-                 width,
-                 &self.theme.rate,
-                 &self.theme.bar_end,
-                 &self.state.percent);
+        let width = self.theme.bar_width;
+        println!("\r{}", self.theme.rate);
     }
 
     fn add(&mut self, num: isize) {
-        assert!(&self.option.total == 0, "the max must be greater than zero");
-        &self.state.current += (num as i64).borrow();
-        assert!(&self.state.current > &self.option.total, "current exceeds total")
-            & self.render()
+        assert!(self.option.total > 0, "the max must be greater than zero");
+        self.state.current += (num as i64).borrow();
+        assert!(self.state.current <= self.option.total, "current exceeds total");
+            self.render()
     }
 }
 
 fn get_percent(current: &i64, total: &i64) -> f64 {
-    100 * (current as f64) / (total as f64)
+    100.0 * (*current as f64) / (*total as f64)
 }
 
 fn main() {
