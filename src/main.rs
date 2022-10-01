@@ -2,11 +2,12 @@ use std::fs::File;
 use std::io::Write;
 use std::rc::Rc;
 use std::{io, time};
+use std::fmt::Error;
 use std::time::Instant;
 
 struct Bar {
     state: State,
-    options: Option,
+    option: Option,
     theme: Theme,
 }
 
@@ -64,13 +65,15 @@ impl Bar {
     fn new(max: i64) -> Self {
         Self {
             state: State::new(max),
-            options: Option::new(max, Instant::now()),
+            option: Option::new(max, Instant::now()),
             theme: Theme::new('█', '[', ']', 50)
         }
     }
 
-    fn add(num: isize) -> io::Error {
-
+    fn add(&self, num: isize) -> io::Error {
+        if &self.option.total == 0 {
+            Error::from("the max must be greater than zero")
+        }
     }
 }
 
