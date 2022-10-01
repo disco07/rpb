@@ -39,10 +39,6 @@ impl State {
             current_graph_rate: 0,
         }
     }
-
-    fn set_percent(&mut self, percent: f64) {
-        &self.percent = percent
-    }
 }
 
 impl Theme {
@@ -76,21 +72,21 @@ impl Bar {
     }
 
     fn render(&mut self) {
-        let last = &self.state.percent;
-        &self.state.percent = get_percent(&self.state.current, &self.option.total).borrow();
-        let last_graph_rate = &self.state.current_graph_rate;
-        &self.state.current_graph_rate = &self.state.percent / 100.0 * (&self.theme.bar_width);
-        if &self.state.percent != last {
-            let n: usize = (&self.state.current_graph_rate - *last_graph_rate) as usize;
-            &self.theme.rate += format!("{:-^1$}", &self.theme.bar_type, n);
+        let last = self.state.percent;
+        self.state.percent = get_percent(&self.state.current, &self.option.total);
+        let last_graph_rate = self.state.current_graph_rate;
+        self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
+        if self.state.percent != last {
+            let n: usize = (self.state.current_graph_rate - last_graph_rate) as usize;
+            self.theme.rate.push_str("111");
         }
-        let width = &self.theme.bar_width;
+        let width = self.theme.bar_width;
         println!("\r{}{:>width$}{}{}{}%",
-                 &self.theme.bar_start,
+                 self.theme.bar_start,
                  width,
-                 &self.theme.rate,
-                 &self.theme.bar_end,
-                 &self.state.percent);
+                 self.theme.rate,
+                 self.theme.bar_end,
+                 self.state.percent);
     }
 
     fn add(&mut self, num: isize) {
