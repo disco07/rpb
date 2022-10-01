@@ -1,21 +1,32 @@
 use std::fs::File;
 use std::io::Write;
 use std::rc::Rc;
+use std::time;
 
-#[derive(Debug)]
-struct Person {
-    name: Rc<String>,
-    age: u32,
+struct Bar {
+    state: State,
+    options: Option,
+    theme: Theme
 }
 
-impl Person {
-    fn new(name: Rc<String>, age: u32) -> Self {
-        Self { name, age }
-    }
+struct State {
+    percent: f64,
+    current: i64,
+    current_graph_rate: isize,
+}
 
-    fn say_hello(&self) -> String {
-        format!("Hello, I am {} and I have {}", &self.name, &self.age)
-    }
+struct Option {
+    total: i64,
+    start_time: time::Time,
+}
+
+struct Theme {
+    rate: String,
+    bar_type: String,
+    bar_start: String,
+    bar_end: String,
+    bar_width: String,
+
 }
 
 fn main() {
