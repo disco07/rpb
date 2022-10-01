@@ -12,7 +12,7 @@ struct Person {
 
 impl Person {
     fn new(name: String, age: u32) -> Self {
-        Self { name: name, age: age }
+        Self { name, age }
     }
 
     fn say_hello(&self) -> String {
