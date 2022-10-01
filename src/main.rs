@@ -1,12 +1,13 @@
+use std::rc::Rc;
 
 #[derive(Debug)]
 struct Person {
-    name: String,
+    name: Rc<String>,
     age: u32,
 }
 
 impl Person {
-    fn new(name: String, age: u32) -> Self {
+    fn new(name: Rc<String>, age: u32) -> Self {
         Self { name, age }
     }
 
@@ -16,7 +17,7 @@ impl Person {
 }
 
 fn main() {
-    let name = String::from("Drissa");
+    let name = Rc::new(String::from("Drissa"));
     let p = Person::new(name, 31);
     println!("{}", p.say_hello())
 }
