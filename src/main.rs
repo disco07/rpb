@@ -2,8 +2,9 @@ use std::fs::File;
 use std::io::Write;
 use std::rc::Rc;
 use std::{io, time};
+use std::borrow::Borrow;
 use std::fmt::Error;
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 struct Bar {
     state: State,
@@ -19,7 +20,7 @@ struct State {
 
 struct Option {
     total: i64,
-    start_time: time::Time,
+    start_time: Instant,
 }
 
 struct Theme {
@@ -34,7 +35,7 @@ impl State {
     fn new(max: i64) -> State {
         Self {
             current: 0,
-            percent: get_percent(0, max),
+            percent: get_percent(&0, &max),
             current_graph_rate: 0
         }
     }
@@ -53,7 +54,7 @@ impl Theme {
 }
 
 impl Option {
-    fn new(total: i64, time: time) -> Option {
+    fn new(total: i64, time: Instant) -> Option {
         Self {
             total,
             start_time: time
@@ -70,15 +71,40 @@ impl Bar {
         }
     }
 
-    fn add(&self, num: isize) -> io::Error {
-        if &self.option.total == 0 {
-            Error::from("the max must be greater than zero")
+    fn render(&self) {
+        let last = &self.state.percent;
+        &self.state.percent = get_percent(&self.state.current, &self.option.total).borrow();
+        let last_graph_rate = &self.state.current_graph_rate;
+        &self.state.current_graph_rate = &((&self.state.percent / 100.0 * (&self.theme.GraphWidth as f64)) as isize);
+        if &self.state.percent != last {
+            let n: usize = (&self.state.current_graph_rate - *last_graph_rate) as usize;
+            &self.theme.rate += format!("{:-^1$}", &self.theme.bar_type, n);
         }
+        let width = &self.theme.bar_width;
+        println!("\r{}{:>width$}{}{}{}%",
+                 &self.theme.bar_start,
+                 width,
+                 &self.theme.rate,
+                 &self.theme.bar_end,
+                 &self.state.percent);
+    }
+
+    fn add(&self, num: isize) {
+        assert!(&self.option.total == 0, "the max must be greater than zero");
+        &self.state.current += (num as i64).borrow();
+        assert!(&self.state.current > &self.option.total, "current exceeds total")
+        &self.render()
     }
 }
 
-fn get_percent(current: i64, total: i64) -> f64 {
+fn get_percent(current: &i64, total: &i64) -> f64 {
     100 * (current as f64)/(total as f64)
 }
 
-fn main() {}
+fn main() {
+    let bar = Bar::new(100);
+
+    for i in 0..100 {
+        bar.add(1);
+    }
+}
