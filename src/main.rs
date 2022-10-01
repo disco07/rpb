@@ -20,9 +20,9 @@ fn main() {
     let name = Rc::new(String::from("Drissa"));
     let p = Person::new(name, 31);
     println!("{}", p.say_hello());
-    let add = |x, y| {
+    let add = |x:f64, y:f64| {
       format!("x + y = {}", x + y)
     };
 
-    println!("{}", add(1, 2));
+    println!("{}", add(1.5, 2.5));
 }
