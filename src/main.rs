@@ -1,9 +1,9 @@
-use std::fs::File;
-use std::io::Write;
-use std::rc::Rc;
 use std::{io, time};
 use std::borrow::Borrow;
 use std::fmt::Error;
+use std::fs::File;
+use std::io::Write;
+use std::rc::Rc;
 use std::time::{Duration, Instant};
 
 struct Bar {
@@ -36,19 +36,23 @@ impl State {
         Self {
             current: 0,
             percent: get_percent(&0, &max),
-            current_graph_rate: 0
+            current_graph_rate: 0,
         }
+    }
+
+    fn set_percent(&mut self, percent: f64) {
+        &self.percent = percent
     }
 }
 
 impl Theme {
-    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: isize,) -> Theme {
+    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: isize) -> Theme {
         Self {
             rate: "".to_string(),
             bar_type,
             bar_start,
             bar_end,
-            bar_width
+            bar_width,
         }
     }
 }
@@ -57,7 +61,7 @@ impl Option {
     fn new(total: i64, time: Instant) -> Option {
         Self {
             total,
-            start_time: time
+            start_time: time,
         }
     }
 }
@@ -67,15 +71,15 @@ impl Bar {
         Self {
             state: State::new(max),
             option: Option::new(max, Instant::now()),
-            theme: Theme::new('█', '[', ']', 50)
+            theme: Theme::new('█', '[', ']', 50),
         }
     }
 
-    fn render(&self) {
+    fn render(&mut self) {
         let last = &self.state.percent;
         &self.state.percent = get_percent(&self.state.current, &self.option.total).borrow();
         let last_graph_rate = &self.state.current_graph_rate;
-        &self.state.current_graph_rate = &((&self.state.percent / 100.0 * (&self.theme.GraphWidth as f64)) as isize);
+        &self.state.current_graph_rate = &self.state.percent / 100.0 * (&self.theme.bar_width);
         if &self.state.percent != last {
             let n: usize = (&self.state.current_graph_rate - *last_graph_rate) as usize;
             &self.theme.rate += format!("{:-^1$}", &self.theme.bar_type, n);
@@ -89,20 +93,20 @@ impl Bar {
                  &self.state.percent);
     }
 
-    fn add(&self, num: isize) {
+    fn add(&mut self, num: isize) {
         assert!(&self.option.total == 0, "the max must be greater than zero");
         &self.state.current += (num as i64).borrow();
         assert!(&self.state.current > &self.option.total, "current exceeds total")
-        &self.render()
+            & self.render()
     }
 }
 
 fn get_percent(current: &i64, total: &i64) -> f64 {
-    100 * (current as f64)/(total as f64)
+    100 * (current as f64) / (total as f64)
 }
 
 fn main() {
-    let bar = Bar::new(100);
+    let mut bar = Bar::new(100);
 
     for i in 0..100 {
         bar.add(1);
