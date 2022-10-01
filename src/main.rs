@@ -22,9 +22,7 @@ fn main() {
     let name = Rc::new(String::from("Drissa"));
     let p = Person::new(name, 31);
     println!("{}", p.say_hello());
-    let add = |x, y| {
-      x > y
-    };
+    let add = |x, y| x > y;
     let mut f = File::create("src/t.txt").unwrap();
     f.write_all("bonjour".as_bytes()).unwrap();
     // let data = File::open("/src/t.txt").unwrap();
