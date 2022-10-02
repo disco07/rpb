@@ -88,22 +88,34 @@ impl Bar {
         );
     }
 
-    fn render(&mut self) {
+    fn render_middle_bar(&mut self) -> String {
         let last = self.state.percent;
         self.state.percent = get_percent(&self.state.current, &self.option.total);
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
+
         if self.state.percent != last {
             let n: usize = (self.state.current_graph_rate) as usize;
             self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
         }
-        print!("\r|{}|", self.theme.rate);
+
+        return format!("[{}]", self.theme.rate);
+    }
+
+    fn render(&mut self) -> (String, String, String) {
+        let lbar = self.render_left_bar();
+        let rbar = self.render_right_bar();
+
+        let mbar = self.render_middle_bar();
+
+        return (lbar, mbar, rbar);
     }
 
     fn add(&mut self, num: isize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
         assert!(self.state.current <= self.option.total, "current exceeds total");
-        self.render()
+        let (lbar, mbar, rbar) = self.render();
+        print!("{}{}{}", lbar, mbar, rbar)
     }
 }
 
@@ -116,6 +128,6 @@ fn main() {
 
     for i in 0..10 {
         bar.add(1);
-        sleep(Duration::from_millis(100))
+        sleep(Duration::from_millis(1000))
     }
 }
