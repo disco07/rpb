@@ -75,20 +75,21 @@ impl Bar {
         let desc_spacing = if self.desc == "" { "" } else { ": " };
         let mut spacing = if self.state.percent >= 10.0 { " " } else { "  " };
 
-        if self.state.percent >= 1.0 {
+        if self.state.percent >= 100.0 {
             spacing = "";
         }
 
         return format!(
-            "{}{}{}{}% {}",
+            "{}{}{}{}%{}",
             self.desc, desc_spacing, spacing, self.state.percent as u64, self.theme.bar_start);
     }
 
     fn render_right_bar(&mut self) -> String {
         let mut white_space = self.theme.bar_width;
         if self.state.current >= 1 {
-            white_space -= self.state.current as usize;
+            white_space -= self.state.current_graph_rate as usize;
         }
+        // println!(" white_space = {}", white_space);
         return format!(
             "{}{} {}/{}", " ".repeat(white_space), self.theme.bar_end,
             self.state.current, self.option.total
@@ -100,6 +101,7 @@ impl Bar {
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
 
         let n: usize = (self.state.current_graph_rate) as usize;
+        // println!("n = {} other = {}", n, self.state.percent / 100.0 * (self.theme.bar_width as f64));
         self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
 
         return format!("{}", self.theme.rate);
@@ -107,8 +109,8 @@ impl Bar {
 
     fn render(&mut self) -> (String, String, String) {
         let lbar = self.render_left_bar();
-        let rbar = self.render_right_bar();
         let mbar = self.render_middle_bar();
+        let rbar = self.render_right_bar();
 
         return (lbar, mbar, rbar);
     }
@@ -133,9 +135,9 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(50);
+    let mut bar = Bar::new(100);
 
-    for i in 0..50 {
+    for i in 0..100 {
         bar.add(1);
         sleep(Duration::from_millis(100))
     }
