@@ -90,14 +90,11 @@ impl Bar {
     }
 
     fn render_middle_bar(&mut self) -> String {
-        let last = self.state.percent;
         self.state.percent = get_percent(&self.state.current, &self.option.total);
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
 
-        if self.state.percent != last {
-            let n: usize = (self.state.current_graph_rate) as usize;
-            self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
-        }
+        let n: usize = (self.state.current_graph_rate) as usize;
+        self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
 
         return format!("[{}]", self.theme.rate);
     }
