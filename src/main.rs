@@ -86,8 +86,8 @@ impl Bar {
 
     fn render_right_bar(&mut self) -> String {
         let mut white_space = self.theme.bar_width;
-        if self.state.current > 1 {
-            white_space -= self.state.current_graph_rate as usize;
+        if self.state.current >= 1 {
+            white_space -= self.state.current as usize;
         }
         return format!(
             "{}{} {}/{}", " ".repeat(white_space), self.theme.bar_end,
@@ -97,7 +97,7 @@ impl Bar {
 
     fn render_middle_bar(&mut self) -> String {
         self.state.percent = get_percent(&self.state.current, &self.option.total);
-        self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
+        self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
 
         let n: usize = (self.state.current_graph_rate) as usize;
         self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
@@ -108,7 +108,6 @@ impl Bar {
     fn render(&mut self) -> (String, String, String) {
         let lbar = self.render_left_bar();
         let rbar = self.render_right_bar();
-
         let mbar = self.render_middle_bar();
 
         return (lbar, mbar, rbar);
@@ -134,9 +133,9 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(100);
+    let mut bar = Bar::new(50);
 
-    for i in 0..100 {
+    for i in 0..50 {
         bar.add(1);
         sleep(Duration::from_millis(100))
     }
