@@ -23,7 +23,7 @@ struct Theme {
     bar_type: char,
     bar_start: char,
     bar_end: char,
-    bar_width: isize,
+    bar_width: usize,
 }
 
 impl State {
@@ -37,7 +37,7 @@ impl State {
 }
 
 impl Theme {
-    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: isize) -> Theme {
+    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: usize) -> Theme {
         Self {
             rate: "".to_string(),
             bar_type,
@@ -69,20 +69,17 @@ impl Bar {
     fn render(&mut self) {
         let last = self.state.percent;
         self.state.percent = get_percent(&self.state.current, &self.option.total);
-        let last_graph_rate = self.state.current_graph_rate;
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
         if self.state.percent != last {
             let n: usize = (self.state.current_graph_rate) as usize;
-
             self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
         }
-        let width = self.theme.bar_width;
-        print!("\r|{:>width$}{}|", width as usize, self.theme.rate);
+        print!("\r|{}|", self.theme.rate);
     }
 
     fn add(&mut self, num: isize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
-        self.state.current += (num as i64);
+        self.state.current += num as i64;
         assert!(self.state.current <= self.option.total, "current exceeds total");
         self.render()
     }
@@ -93,9 +90,9 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(100);
+    let mut bar = Bar::new(10);
 
-    for i in 0..100 {
+    for i in 0..10 {
         bar.add(1);
         sleep(Duration::from_millis(100))
     }
