@@ -1,9 +1,4 @@
-use std::{io, time};
-use std::borrow::Borrow;
-use std::fmt::Error;
-use std::fs::File;
-use std::io::Write;
-use std::rc::Rc;
+use std::thread::sleep;
 use std::time::{Duration, Instant};
 
 struct Bar {
@@ -77,19 +72,19 @@ impl Bar {
         let last_graph_rate = self.state.current_graph_rate;
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
         if self.state.percent != last {
-            let n: usize = (self.state.current_graph_rate - last_graph_rate) as usize;
+            let n: usize = (self.state.current_graph_rate) as usize;
 
-            self.theme.rate.push_str("#");
+            self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
         }
         let width = self.theme.bar_width;
-        println!("\r{}", self.theme.rate);
+        print!("\r|{:>width$}{}|", width as usize, self.theme.rate);
     }
 
     fn add(&mut self, num: isize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
-        self.state.current += (num as i64).borrow();
+        self.state.current += (num as i64);
         assert!(self.state.current <= self.option.total, "current exceeds total");
-            self.render()
+        self.render()
     }
 }
 
@@ -102,5 +97,6 @@ fn main() {
 
     for i in 0..100 {
         bar.add(1);
+        sleep(Duration::from_millis(100))
     }
 }
