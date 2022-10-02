@@ -89,9 +89,11 @@ impl Bar {
         if self.state.current >= 1 {
             white_space -= self.state.current_graph_rate as usize;
         }
-        // println!(" white_space = {}", white_space);
+        let time_elapsed = self.option.start_time.elapsed().as_secs_f64();
         return format!(
-            "{}{} {}/{}", " ".repeat(white_space), self.theme.bar_end,
+            "{}{} {} {}/{}",
+            " ".repeat(white_space), self.theme.bar_end,
+            time_elapsed,
             self.state.current, self.option.total
         );
     }
@@ -101,7 +103,6 @@ impl Bar {
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
 
         let n: usize = (self.state.current_graph_rate) as usize;
-        // println!("n = {} other = {}", n, self.state.percent / 100.0 * (self.theme.bar_width as f64));
         self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
 
         return format!("{}", self.theme.rate);
