@@ -2,6 +2,7 @@ use std::thread::sleep;
 use std::time::{Duration, Instant};
 
 struct Bar {
+    desc: String,
     state: State,
     option: Option,
     theme: Theme,
@@ -60,10 +61,31 @@ impl Option {
 impl Bar {
     fn new(max: i64) -> Self {
         Self {
+            desc: "".to_string(),
             state: State::new(max),
             option: Option::new(max, Instant::now()),
             theme: Theme::new('█', '[', ']', 50),
         }
+    }
+
+    fn render_left_bar(&mut self) -> String {
+        self.state.percent = get_percent(&self.state.current, &self.option.total);
+
+        let desc_spacing = if self.desc == "" { "" } else { ": " };
+        let mut spacing = if self.state.percent >= 10.0 { " " } else { "  " };
+
+        if self.state.percent >= 1.0 {
+            spacing = "";
+        }
+
+        return format!("{}{}{}{}%", self.desc, desc_spacing, spacing, self.state.percent as u64);
+    }
+
+    fn render_right_bar(&mut self) -> String {
+        return format!(
+            " {}/{}",
+            self.state.current, self.option.total
+        );
     }
 
     fn render(&mut self) {
