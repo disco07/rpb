@@ -1,3 +1,4 @@
+use std::io::Write;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 
@@ -110,12 +111,18 @@ impl Bar {
         return (lbar, mbar, rbar);
     }
 
+    fn print_bar(&mut self, string: String) {
+        let mut stdout = std::io::stdout();
+        stdout.write_fmt(format_args!("{}", string)).unwrap();
+        stdout.flush().unwrap();
+    }
+
     fn add(&mut self, num: isize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
         assert!(self.state.current <= self.option.total, "current exceeds total");
         let (lbar, mbar, rbar) = self.render();
-        print!("{}{}{}", lbar, mbar, rbar)
+        self.print_bar(format!("\r{}{}{}", lbar, mbar, rbar))
     }
 }
 
