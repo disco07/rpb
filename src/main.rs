@@ -135,9 +135,9 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(100);
+    let mut bar = Bar::new(153);
 
-    for i in 0..100 {
+    for i in 0..153 {
         bar.add(1);
         sleep(Duration::from_millis(100))
     }
