@@ -1,7 +1,9 @@
+use std::io::Write;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 
 struct Bar {
+    desc: String,
     state: State,
     option: Option,
     theme: Theme,
@@ -23,7 +25,7 @@ struct Theme {
     bar_type: char,
     bar_start: char,
     bar_end: char,
-    bar_width: isize,
+    bar_width: usize,
 }
 
 impl State {
@@ -37,7 +39,7 @@ impl State {
 }
 
 impl Theme {
-    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: isize) -> Theme {
+    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: usize) -> Theme {
         Self {
             rate: "".to_string(),
             bar_type,
@@ -60,31 +62,70 @@ impl Option {
 impl Bar {
     fn new(max: i64) -> Self {
         Self {
+            desc: "".to_string(),
             state: State::new(max),
             option: Option::new(max, Instant::now()),
-            theme: Theme::new('█', '[', ']', 50),
+            theme: Theme::new('█', '|', '|', 50),
         }
     }
 
-    fn render(&mut self) {
-        let last = self.state.percent;
+    fn render_left_bar(&mut self) -> String {
         self.state.percent = get_percent(&self.state.current, &self.option.total);
-        let last_graph_rate = self.state.current_graph_rate;
-        self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
-        if self.state.percent != last {
-            let n: usize = (self.state.current_graph_rate) as usize;
 
-            self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
+        let desc_spacing = if self.desc == "" { "" } else { ": " };
+        let mut spacing = if self.state.percent >= 10.0 { " " } else { "  " };
+
+        if self.state.percent >= 1.0 {
+            spacing = "";
         }
-        let width = self.theme.bar_width;
-        print!("\r|{:>width$}{}|", width as usize, self.theme.rate);
+
+        return format!(
+            "{}{}{}{}% {}",
+            self.desc, desc_spacing, spacing, self.state.percent as u64, self.theme.bar_start);
     }
 
-    fn add(&mut self, num: isize) {
+    fn render_right_bar(&mut self) -> String {
+        let mut white_space = self.theme.bar_width;
+        if self.state.current > 1 {
+            white_space -= self.state.current_graph_rate as usize;
+        }
+        return format!(
+            "{}{} {}/{}", " ".repeat(white_space), self.theme.bar_end,
+            self.state.current, self.option.total
+        );
+    }
+
+    fn render_middle_bar(&mut self) -> String {
+        self.state.percent = get_percent(&self.state.current, &self.option.total);
+        self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)) as isize;
+
+        let n: usize = (self.state.current_graph_rate) as usize;
+        self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
+
+        return format!("{}", self.theme.rate);
+    }
+
+    fn render(&mut self) -> (String, String, String) {
+        let lbar = self.render_left_bar();
+        let rbar = self.render_right_bar();
+
+        let mbar = self.render_middle_bar();
+
+        return (lbar, mbar, rbar);
+    }
+
+    fn print_bar(&mut self, string: String) {
+        let mut stdout = std::io::stdout();
+        stdout.write_fmt(format_args!("{}", string)).unwrap();
+        stdout.flush().unwrap();
+    }
+
+    fn add(&mut self, num: usize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
-        self.state.current += (num as i64);
+        self.state.current += num as i64;
         assert!(self.state.current <= self.option.total, "current exceeds total");
-        self.render()
+        let (lbar, mbar, rbar) = self.render();
+        self.print_bar(format!("\r{}{}{}", lbar, mbar, rbar))
     }
 }
 
