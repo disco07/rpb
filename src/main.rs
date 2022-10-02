@@ -65,7 +65,7 @@ impl Bar {
             desc: "".to_string(),
             state: State::new(max),
             option: Option::new(max, Instant::now()),
-            theme: Theme::new('█', '[', ']', 50),
+            theme: Theme::new('█', '|', '|', 50),
         }
     }
 
@@ -79,12 +79,18 @@ impl Bar {
             spacing = "";
         }
 
-        return format!("{}{}{}{}%", self.desc, desc_spacing, spacing, self.state.percent as u64);
+        return format!(
+            "{}{}{}{}% {}",
+            self.desc, desc_spacing, spacing, self.state.percent as u64, self.theme.bar_start);
     }
 
     fn render_right_bar(&mut self) -> String {
+        let mut white_space = self.theme.bar_width;
+        if self.state.current > 1 {
+            white_space -= self.state.current_graph_rate as usize;
+        }
         return format!(
-            " {}/{}",
+            "{}{} {}/{}", " ".repeat(white_space), self.theme.bar_end,
             self.state.current, self.option.total
         );
     }
@@ -96,7 +102,7 @@ impl Bar {
         let n: usize = (self.state.current_graph_rate) as usize;
         self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
 
-        return format!("[{}]", self.theme.rate);
+        return format!("{}", self.theme.rate);
     }
 
     fn render(&mut self) -> (String, String, String) {
@@ -114,7 +120,7 @@ impl Bar {
         stdout.flush().unwrap();
     }
 
-    fn add(&mut self, num: isize) {
+    fn add(&mut self, num: usize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
         assert!(self.state.current <= self.option.total, "current exceeds total");
@@ -128,10 +134,10 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(10);
+    let mut bar = Bar::new(100);
 
-    for i in 0..10 {
+    for i in 0..100 {
         bar.add(1);
-        sleep(Duration::from_millis(1000))
+        sleep(Duration::from_millis(100))
     }
 }
