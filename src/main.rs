@@ -83,9 +83,9 @@ impl Bar {
             spacing = "";
         }
 
-        return format!(
+        format!(
             "{}{}{}{}%{}",
-            self.desc, desc_spacing, spacing, self.state.percent as u64, self.theme.bar_start);
+            self.desc, desc_spacing, spacing, self.state.percent as u64, self.theme.bar_start)
     }
 
     fn render_right_bar(&mut self) -> String {
@@ -94,12 +94,13 @@ impl Bar {
             white_space -= self.state.current_graph_rate as usize;
         }
         let time_elapsed = self.option.start_time.elapsed().as_secs();
-        let remaining_time = time_elapsed * (self.option.total - self.state.current) as u64/self.state.current as u64;
+        let remaining_time = time_elapsed * (self.option.total - self.state.current) as u64 / self.state.current as u64;
         let mut it_per_s: u64 = 0;
         if time_elapsed >= 1 {
-            it_per_s = (self.state.current as u64)/time_elapsed;
+            it_per_s = (self.state.current as u64) / time_elapsed;
         }
-        return format!(
+
+        format!(
             "{}{} [{}-{}, {} {}/s {}/{}]",
             " ".repeat(white_space), self.theme.bar_end,
             format::convert(time_elapsed),
@@ -107,7 +108,7 @@ impl Bar {
             it_per_s,
             self.option.unit,
             self.state.current, self.option.total
-        );
+        )
     }
 
     fn render_middle_bar(&mut self) -> String {
@@ -117,7 +118,7 @@ impl Bar {
         let n: usize = (self.state.current_graph_rate) as usize;
         self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
 
-        return format!("{}", self.theme.rate);
+        format!("{}", self.theme.rate)
     }
 
     fn render(&mut self) -> (String, String, String) {
