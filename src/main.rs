@@ -92,10 +92,12 @@ impl Bar {
             white_space -= self.state.current_graph_rate as usize;
         }
         let time_elapsed = self.option.start_time.elapsed().as_secs();
+        let remaining_time = time_elapsed * (self.option.total - self.state.current) as u64/self.state.current as u64;
         return format!(
-            "{}{} {} {}/{}",
+            "{}{} [{}-{} {}/{}]",
             " ".repeat(white_space), self.theme.bar_end,
             format::convert(time_elapsed),
+            format::convert(remaining_time),
             self.state.current, self.option.total
         );
     }
@@ -138,10 +140,10 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(153);
+    let mut bar = Bar::new(53);
 
-    for _i in 0..153 {
+    for _i in 0..53 {
+        sleep(Duration::from_millis(1000));
         bar.add(1);
-        sleep(Duration::from_millis(100))
     }
 }
