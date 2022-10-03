@@ -1,6 +1,7 @@
 mod format;
 
 use std::io::Write;
+use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
 
@@ -148,13 +149,4 @@ impl Bar {
 
 fn get_percent(current: &i64, total: &i64) -> f64 {
     100.0 * (*current as f64) / (*total as f64)
-}
-
-fn main() {
-    let mut bar = Bar::new(100);
-
-    for _i in 0..100 {
-        sleep(Duration::from_millis(40));
-        bar.add(1);
-    }
 }
