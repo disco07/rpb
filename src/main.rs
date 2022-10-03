@@ -101,13 +101,15 @@ impl Bar {
         }
 
         format!(
-            "{}{} [{}-{}, {} {}/s {}/{}]",
-            " ".repeat(white_space), self.theme.bar_end,
+            "\x1B[36m{}\x1b[0m{} [{}-{}, {} {}/s {}/{}]",
+            "█".repeat(white_space),
+            self.theme.bar_end,
             format::convert(time_elapsed),
             format::convert(remaining_time),
             it_per_s,
             self.option.unit,
-            self.state.current, self.option.total
+            self.state.current,
+            self.option.total
         )
     }
 
@@ -116,7 +118,7 @@ impl Bar {
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
 
         let n: usize = (self.state.current_graph_rate) as usize;
-        self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
+        self.theme.rate = format!("\x1B[32m{}\x1b[0m", self.theme.bar_type).repeat(n);
 
         format!("{}", self.theme.rate)
     }
