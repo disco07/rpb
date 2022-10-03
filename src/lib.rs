@@ -1,4 +1,6 @@
 mod format;
+mod type_spinner;
+mod spinner;
 
 use std::io::Write;
 use std::thread;

@@ -1,5 +1,5 @@
-use 
 
-pub fn get_spinner(spinner: Spinners) {
-
+pub struct Frames {
+    spinners: Spinners,
+    frame: Spinner
 }
