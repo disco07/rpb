@@ -19,6 +19,7 @@ struct State {
 
 struct Option {
     total: i64,
+    unit: String,
     start_time: Instant,
 }
 
@@ -56,6 +57,7 @@ impl Option {
     fn new(total: i64, time: Instant) -> Option {
         Self {
             total,
+            unit: "it".to_string(),
             start_time: time,
         }
     }
@@ -93,11 +95,17 @@ impl Bar {
         }
         let time_elapsed = self.option.start_time.elapsed().as_secs();
         let remaining_time = time_elapsed * (self.option.total - self.state.current) as u64/self.state.current as u64;
+        let mut it_per_s: u64 = 0;
+        if time_elapsed >= 1 {
+            it_per_s = (self.state.current as u64)/time_elapsed;
+        }
         return format!(
-            "{}{} [{}-{} {}/{}]",
+            "{}{} [{}-{}, {} {}/s {}/{}]",
             " ".repeat(white_space), self.theme.bar_end,
             format::convert(time_elapsed),
             format::convert(remaining_time),
+            it_per_s,
+            self.option.unit,
             self.state.current, self.option.total
         );
     }
@@ -140,10 +148,10 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(53);
+    let mut bar = Bar::new(100);
 
-    for _i in 0..53 {
-        sleep(Duration::from_millis(1000));
+    for _i in 0..100 {
+        sleep(Duration::from_millis(40));
         bar.add(1);
     }
 }
