@@ -1,3 +1,5 @@
+mod format;
+
 use std::io::Write;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
@@ -89,11 +91,11 @@ impl Bar {
         if self.state.current >= 1 {
             white_space -= self.state.current_graph_rate as usize;
         }
-        let time_elapsed = self.option.start_time.elapsed().as_secs_f64();
+        let time_elapsed = self.option.start_time.elapsed().as_secs();
         return format!(
             "{}{} {} {}/{}",
             " ".repeat(white_space), self.theme.bar_end,
-            time_elapsed,
+            format::convert(time_elapsed),
             self.state.current, self.option.total
         );
     }
@@ -138,7 +140,7 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 fn main() {
     let mut bar = Bar::new(153);
 
-    for i in 0..153 {
+    for _i in 0..153 {
         bar.add(1);
         sleep(Duration::from_millis(100))
     }
