@@ -6,6 +6,7 @@ pub mod color;
 use std::io::Write;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use crate::color::{Colorizer};
 use crate::spinner::Spinner;
 use crate::type_spinner::Spinners;
 
@@ -26,7 +27,8 @@ struct Option {
     total: i64,
     unit: String,
     start_time: Instant,
-    spinner: Spinner
+    spinner: Spinner,
+    // color: Colors
 }
 
 struct Theme {
@@ -108,8 +110,8 @@ impl Bar {
         }
 
         format!(
-            "\x1B[36m{}\x1b[0m{} {} [{}-{}, {} {}/s {}/{}]",
-            "█".repeat(white_space),
+            "{}{} {} [{}-{}, {} {}/s {}/{}]",
+            " ".repeat(white_space),
             self.theme.bar_end,
             self.option.spinner.spinning_cursor(self.state.current as usize),
             format::convert(time_elapsed),
@@ -126,7 +128,7 @@ impl Bar {
         self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
 
         let n: usize = (self.state.current_graph_rate) as usize;
-        self.theme.rate = format!("\x1B[32m{}\x1b[0m", self.theme.bar_type).repeat(n);
+        self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
 
         format!("{}", self.theme.rate)
     }
