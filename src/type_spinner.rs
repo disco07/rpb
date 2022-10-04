@@ -1,29 +1,48 @@
-use std::collections::HashMap;
 use strum_macros::{EnumIter, Display};
-use int_enum::IntEnum;
 
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, EnumIter, Display)]
 pub enum Spinners {
-    Dots = 0,
-    Dots2 = 1,
-    Dots3 = 2,
-    Dots4 = 3,
-    Line = 4,
-    GrowVertical = 5,
-    Bounce = 6,
-    Triangle = 7,
-    CircleHalves = 8,
-    Clock = 9,
-    Earth = 10,
-    Moon = 11,
-    Men = 12,
-    Weather = 13,
-    Point = 14,
+    Dots,
+    Dots2,
+    Dots3,
+    Dots4,
+    Line,
+    GrowVertical,
+    Bounce,
+    Triangle,
+    CircleHalves,
+    Clock,
+    Earth,
+    Moon,
+    Men,
+    Weather,
+    Point,
 }
 
-pub fn get_spinner() -> Vec<&'static str> {
-    let map_spinner = HashMap::from([
-        (Spinners::Dots, vec![
+fn spinner_to_int(spinner: Spinners) -> usize {
+    use Spinners::*;
+    match spinner {
+        Dots => 0,
+        Dots2 => 1,
+        Dots3 => 2,
+        Dots4 => 3,
+        Line => 4,
+        GrowVertical => 5,
+        Bounce => 6,
+        Triangle => 7,
+        CircleHalves => 8,
+        Clock => 9,
+        Earth => 10,
+        Moon => 11,
+        Men => 12,
+        Weather => 13,
+        Point => 14,
+    }
+}
+
+pub fn get_spinner(spinner: Spinners) -> Vec<&'static str> {
+    let arr_spinner = [
+        vec![
             "⠋",
             "⠙",
             "⠹",
@@ -33,8 +52,8 @@ pub fn get_spinner() -> Vec<&'static str> {
             "⠦",
             "⠧",
             "⠇",
-            "⠏",
-        ]), (Spinners::Dots2, vec![
+            "",
+        ], vec![
             "⠋",
             "⠙",
             "⠚",
@@ -45,8 +64,8 @@ pub fn get_spinner() -> Vec<&'static str> {
             "⠲",
             "⠳",
             "⠓",
-        ]),
-        (Spinners::Dots3, vec![
+        ],
+        vec![
             "⢹",
             "⢺",
             "⢼",
@@ -55,8 +74,8 @@ pub fn get_spinner() -> Vec<&'static str> {
             "⡧",
             "⡗",
             "⡏",
-        ]),
-        (Spinners::Dots4, vec![
+        ],
+        vec![
             "⢄",
             "⢂",
             "⢁",
@@ -64,14 +83,14 @@ pub fn get_spinner() -> Vec<&'static str> {
             "⡈",
             "⡐",
             "⡠",
-        ]),
-        (Spinners::Line, vec![
+        ],
+        vec![
             "-",
             "\\",
             "|",
             "/",
-        ]),
-        (Spinners::GrowVertical, vec![
+        ],
+        vec![
             "▁",
             "▃",
             "▄",
@@ -83,26 +102,26 @@ pub fn get_spinner() -> Vec<&'static str> {
             "▄",
             "▃",
             "▁",
-        ]),
-        (Spinners::Bounce, vec![
+        ],
+        vec![
             "⠁",
             "⠂",
             "⠄",
             "⠂",
-        ]),
-        (Spinners::Triangle, vec![
+        ],
+        vec![
             "◢",
             "◣",
             "◤",
             "◥",
-        ]),
-        (Spinners::CircleHalves, vec![
+        ],
+        vec![
             "◐",
             "◓",
             "◑",
             "◒",
-        ]),
-        (Spinners::Clock, vec![
+        ],
+        vec![
             "🕛",
             "🕐",
             "🕑",
@@ -115,13 +134,13 @@ pub fn get_spinner() -> Vec<&'static str> {
             "🕘",
             "🕙",
             "🕚",
-        ]),
-        (Spinners::Earth, vec![
+        ],
+        vec![
             "🌍",
             "🌎",
             "🌏",
-        ]),
-        (Spinners::Moon, vec![
+        ],
+        vec![
             "🌑",
             "🌒",
             "🌓",
@@ -130,12 +149,12 @@ pub fn get_spinner() -> Vec<&'static str> {
             "🌖",
             "🌗",
             "🌘",
-        ]),
-        (Spinners::Men, vec![
+        ],
+        vec![
             "🚶",
             "🏃",
-        ]),
-        (Spinners::Weather, vec![
+        ],
+        vec![
             "☀️",
             "☀️",
             "☀️",
@@ -159,28 +178,14 @@ pub fn get_spinner() -> Vec<&'static str> {
             "🌤",
             "☀️",
             "☀️",
-        ]),
-        (Spinners::Point, vec![
+        ],
+        vec![
             "∙∙∙",
             "●∙∙",
             "∙●∙",
             "∙∙●",
             "∙∙∙",
-        ])
-    ]);
-    // map_spinner.get(spinner.int_value()).unwrap()
-    vec![
-        "▁",
-        "▃",
-        "▄",
-        "▅",
-        "▆",
-        "▇",
-        "▆",
-        "▅",
-        "▄",
-        "▃",
-        "▁",
-    ]
-
-    }
+        ]
+    ];
+    arr_spinner.get(spinner_to_int(spinner)).unwrap().to_vec()
+}

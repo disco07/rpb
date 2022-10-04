@@ -64,7 +64,7 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
-            spinner: Spinner::new(type_spinner::get_spinner())
+            spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical))
         }
     }
 }
