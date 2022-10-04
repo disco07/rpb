@@ -8,3 +8,5 @@ edition = "2021"
 [dependencies]
 strum = "0.24"
 strum_macros = "0.24"
+int-enum = "0.4.0"
+enum-iterator = "1.2.0"

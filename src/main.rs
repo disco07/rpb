@@ -64,7 +64,7 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
-            spinner: Spinner::new(all_spinner::get_spinner(Spinners::GrowVertical))
+            spinner: Spinner::new(type_spinner::get_spinner())
         }
     }
 }
@@ -107,7 +107,7 @@ impl Bar {
         }
 
         format!(
-            "\x1B[36m{}\x1b[0m{}  {}  [{}-{}, {} {}/s {}/{}]",
+            "\x1B[36m{}\x1b[0m{} {} [{}-{}, {} {}/s {}/{}]",
             "█".repeat(white_space),
             self.theme.bar_end,
             self.option.spinner.spinning_cursor(self.state.current as usize),

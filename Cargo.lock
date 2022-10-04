@@ -3,10 +3,68 @@
 version = 3
 
 [[package]]
+name = "cfg-if"
+version = "0.1.10"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4785bdd1c96b2a846b2bd7cc02e86b6b3dbf14e7e53446c4f54c92a361040822"
+
+[[package]]
+name = "enum-iterator"
+version = "1.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "91a4ec26efacf4aeff80887a175a419493cb6f8b5480d26387eb0bd038976187"
+dependencies = [
+ "enum-iterator-derive",
+]
+
+[[package]]
+name = "enum-iterator-derive"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "828de45d0ca18782232dfb8f3ea9cc428e8ced380eb26a520baaacfc70de39ce"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "heck"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2540771e65fc8cb83cd6e8a237f70c319bd5c29f78ed1084ba5d50eeac86f7f9"
+
+[[package]]
+name = "int-enum"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2b1428b2b1abe959e6eedb0a17d0ab12f6ba20e1106cc29fc4874e3ba393c177"
+dependencies = [
+ "cfg-if",
+ "int-enum-impl",
+]
+
+[[package]]
+name = "int-enum-impl"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2c3cecaad8ca1a5020843500c696de2b9a07b63b624ddeef91f85f9bafb3671"
+dependencies = [
+ "cfg-if",
+ "proc-macro-crate",
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
+name = "proc-macro-crate"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1d6ea3c4595b96363c13943497db34af4460fb474a95c43f4446ad341b8c9785"
+dependencies = [
+ "toml",
+]
 
 [[package]]
 name = "proc-macro2"
@@ -21,6 +79,8 @@ dependencies = [
 name = "progress_bar"
 version = "0.1.0"
 dependencies = [
+ "enum-iterator",
+ "int-enum",
  "strum",
  "strum_macros",
 ]
@@ -39,6 +99,12 @@ name = "rustversion"
 version = "1.0.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "97477e48b4cf8603ad5f7aaf897467cf42ab4218a38ef76fb14c2d6773a6d6a8"
+
+[[package]]
+name = "serde"
+version = "1.0.145"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "728eb6351430bccb993660dfffc5a72f91ccc1295abaa8ce19b27ebe4f75568b"
 
 [[package]]
 name = "strum"
@@ -68,6 +134,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "toml"
+version = "0.5.9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8d82e1a7758622a465f8cee077614c73484dac5b836c02ff6a40d5d1010324d7"
+dependencies = [
+ "serde",
 ]
 
 [[package]]

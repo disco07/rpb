@@ -3,7 +3,7 @@ pub struct Spinner {
 }
 
 impl Spinner {
-    pub fn new(frames: Vec<&str>) -> Spinner {
+    pub fn new(frames: Vec<&'static str>) -> Spinner {
         Self {
             frames,
         }
