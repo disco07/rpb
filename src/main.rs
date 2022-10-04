@@ -1,7 +1,6 @@
 mod format;
 mod type_spinner;
 pub mod spinner;
-mod all_spinner;
 
 use std::io::Write;
 use std::thread::sleep;

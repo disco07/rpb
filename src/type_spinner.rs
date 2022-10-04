@@ -1,6 +1,7 @@
-use strum;
+use std::collections::HashMap;
+use strum_macros::{EnumIter, Display};
 
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, strum::EnumIter, strum::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, EnumIter, Display)]
 pub enum Spinners {
     Dots,
     Dots2,
@@ -18,4 +19,167 @@ pub enum Spinners {
     Men,
     Weather,
     Point,
+}
+
+impl Spinners {
+    pub fn get_spinner(&self) -> Vec<&'static str> {
+
+        let map_spinner = HashMap::from([
+            (Spinners::Dots, vec![
+                "⠋",
+                "⠙",
+                "⠹",
+                "⠸",
+                "⠼",
+                "⠴",
+                "⠦",
+                "⠧",
+                "⠇",
+                "⠏",
+            ]), (Spinners::Dots2, vec![
+                "⠋",
+                "⠙",
+                "⠚",
+                "⠞",
+                "⠖",
+                "⠦",
+                "⠴",
+                "⠲",
+                "⠳",
+                "⠓",
+            ]),
+            (Spinners::Dots3, vec![
+                "⢹",
+                "⢺",
+                "⢼",
+                "⣸",
+                "⣇",
+                "⡧",
+                "⡗",
+                "⡏",
+            ]),
+            (Spinners::Dots4, vec![
+                "⢄",
+                "⢂",
+                "⢁",
+                "⡁",
+                "⡈",
+                "⡐",
+                "⡠",
+            ]),
+            (Spinners::Line, vec![
+                "-",
+                "\\",
+                "|",
+                "/",
+            ]),
+            (Spinners::GrowVertical, vec![
+                "▁",
+                "▃",
+                "▄",
+                "▅",
+                "▆",
+                "▇",
+                "▆",
+                "▅",
+                "▄",
+                "▃",
+                "▁",
+            ]),
+            (Spinners::Bounce, vec![
+                "⠁",
+                "⠂",
+                "⠄",
+                "⠂",
+            ]),
+            (Spinners::Triangle, vec![
+                "◢",
+                "◣",
+                "◤",
+                "◥",
+            ]),
+            (Spinners::CircleHalves, vec![
+                "◐",
+                "◓",
+                "◑",
+                "◒",
+            ]),
+            (Spinners::Arrow, vec![
+                "←",
+                "↖",
+                "↑",
+                "↗",
+                "→",
+                "↘",
+                "↓",
+                "↙",
+            ]),
+            (Spinners::Clock, vec![
+                "🕛",
+                "🕐",
+                "🕑",
+                "🕒",
+                "🕓",
+                "🕔",
+                "🕕",
+                "🕖",
+                "🕗",
+                "🕘",
+                "🕙",
+                "🕚",
+            ]),
+            (Spinners::Earth, vec![
+                "🌍",
+                "🌎",
+                "🌏",
+            ]),
+            (Spinners::Moon, vec![
+                "🌑",
+                "🌒",
+                "🌓",
+                "🌔",
+                "🌕",
+                "🌖",
+                "🌗",
+                "🌘",
+            ]),
+            (Spinners::Men, vec![
+                "🚶",
+                "🏃",
+            ]),
+            (Spinners::Weather, vec![
+                "☀️",
+                "☀️",
+                "☀️",
+                "🌤",
+                "⛅️",
+                "🌥",
+                "☁️",
+                "🌧",
+                "🌨",
+                "🌧",
+                "🌨",
+                "🌧",
+                "🌨",
+                "⛈",
+                "🌨",
+                "🌧",
+                "🌨",
+                "☁️",
+                "🌥",
+                "⛅️",
+                "🌤",
+                "☀️",
+                "☀️",
+            ]),
+            (Spinners::Point, vec![
+                "∙∙∙",
+                "●∙∙",
+                "∙●∙",
+                "∙∙●",
+                "∙∙∙",
+            ])
+        ]);
+        map_spinner[spinner]
+    }
 }
