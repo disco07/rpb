@@ -1,8 +1,12 @@
 mod format;
+mod type_spinner;
+pub mod spinner;
 
 use std::io::Write;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use crate::spinner::Spinner;
+use crate::type_spinner::Spinners;
 
 struct Bar {
     desc: String,
@@ -21,6 +25,7 @@ struct Option {
     total: i64,
     unit: String,
     start_time: Instant,
+    spinner: Spinner
 }
 
 struct Theme {
@@ -59,6 +64,7 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
+            spinner: Spinner::new(type_spinner::get_spinner())
         }
     }
 }
@@ -101,9 +107,10 @@ impl Bar {
         }
 
         format!(
-            "\x1B[36m{}\x1b[0m{} [{}-{}, {} {}/s {}/{}]",
+            "\x1B[36m{}\x1b[0m{} {} [{}-{}, {} {}/s {}/{}]",
             "█".repeat(white_space),
             self.theme.bar_end,
+            self.option.spinner.spinning_cursor(self.state.current as usize),
             format::convert(time_elapsed),
             format::convert(remaining_time),
             it_per_s,
