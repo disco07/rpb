@@ -65,7 +65,7 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
-            spinner: Spinner::new(type_spinner::get_spinner(Spinners::Moon))
+            spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical))
         }
     }
 }
@@ -159,5 +159,10 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    println!("🌑");
+    let mut bar = Bar::new(100);
+
+    for _i in 0..100 {
+        sleep(Duration::from_millis(40));
+        bar.add(1);
+    }
 }
