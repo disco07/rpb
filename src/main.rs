@@ -1,6 +1,7 @@
 mod format;
 mod type_spinner;
 pub mod spinner;
+pub mod color;
 
 use std::io::Write;
 use std::thread::sleep;
@@ -64,7 +65,7 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
-            spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical))
+            spinner: Spinner::new(type_spinner::get_spinner(Spinners::Moon))
         }
     }
 }
@@ -158,10 +159,5 @@ fn get_percent(current: &i64, total: &i64) -> f64 {
 }
 
 fn main() {
-    let mut bar = Bar::new(100);
-
-    for _i in 0..100 {
-        sleep(Duration::from_millis(40));
-        bar.add(1);
-    }
+    println!("🌑");
 }
