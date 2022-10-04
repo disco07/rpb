@@ -1,13 +1,11 @@
 pub struct Spinner {
-    frames: Vec<&'static str>,
-    interval: u16,
+    frames: Vec<&'static str>
 }
 
 impl Spinner {
-    pub fn new(frames: Vec<&str>, interval: u16) -> Spinner {
+    pub fn new(frames: Vec<&str>) -> Spinner {
         Self {
             frames,
-            interval
         }
     }
 

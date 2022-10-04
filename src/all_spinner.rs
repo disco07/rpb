@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 use crate::type_spinner::Spinners;
 
-pub fn get_spinner(spinner: Spinners) -> Vec<&str> {
+pub fn get_spinner(spinner: Spinners) -> Vec<&'static str> {
     let map_spinner = HashMap::from([
         (Spinners::Dots, vec![
             "⠋",

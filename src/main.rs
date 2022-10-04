@@ -1,12 +1,13 @@
 mod format;
 mod type_spinner;
 pub mod spinner;
-pub mod all_spinner;
+mod all_spinner;
 
 use std::io::Write;
-use std::thread;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
+use crate::spinner::Spinner;
+use crate::type_spinner::Spinners;
 
 struct Bar {
     desc: String,
@@ -25,6 +26,7 @@ struct Option {
     total: i64,
     unit: String,
     start_time: Instant,
+    spinner: Spinner
 }
 
 struct Theme {
@@ -63,6 +65,7 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
+            spinner: Spinner::new(all_spinner::get_spinner(Spinners::GrowVertical))
         }
     }
 }
@@ -105,9 +108,10 @@ impl Bar {
         }
 
         format!(
-            "\x1B[36m{}\x1b[0m{} [{}-{}, {} {}/s {}/{}]",
+            "\x1B[36m{}\x1b[0m{}  {}  [{}-{}, {} {}/s {}/{}]",
             "█".repeat(white_space),
             self.theme.bar_end,
+            self.option.spinner.spinning_cursor(self.state.current as usize),
             format::convert(time_elapsed),
             format::convert(remaining_time),
             it_per_s,
@@ -152,4 +156,13 @@ impl Bar {
 
 fn get_percent(current: &i64, total: &i64) -> f64 {
     100.0 * (*current as f64) / (*total as f64)
+}
+
+fn main() {
+    let mut bar = Bar::new(100);
+
+    for _i in 0..100 {
+        sleep(Duration::from_millis(40));
+        bar.add(1);
+    }
 }

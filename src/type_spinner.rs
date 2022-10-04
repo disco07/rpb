@@ -1,6 +1,6 @@
-use strum::{EnumIter, Display};
+use strum;
 
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, EnumIter, Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, strum::EnumIter, strum::Display)]
 pub enum Spinners {
     Dots,
     Dots2,
@@ -15,6 +15,7 @@ pub enum Spinners {
     Clock,
     Earth,
     Moon,
+    Men,
     Weather,
     Point,
 }
