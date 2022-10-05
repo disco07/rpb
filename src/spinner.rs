@@ -9,9 +9,9 @@ impl Spinner {
         }
     }
 
-    pub fn spinning_cursor(&self, index: usize) -> Option<String> {
+    pub fn spinning_cursor(&self, index: usize) -> String {
         let frame = self.frames.get(index%self.frames.len()).unwrap();
-        Option::from(frame.to_string())
+        frame.to_string()
     }
 }
 
