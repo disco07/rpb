@@ -70,6 +70,10 @@ impl Option {
             spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical))
         }
     }
+
+    fn set(&self, spinner: Spinners) {
+
+    }
 }
 
 impl Bar {
