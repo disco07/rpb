@@ -1,14 +1,10 @@
-mod format;
-mod type_spinner;
-pub mod spinner;
-pub mod color;
-
 use std::io::Write;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
-use crate::color::{Colorizer};
-use crate::spinner::Spinner;
-use crate::type_spinner::Spinners;
+use progress_bar::color::{Colorizer};
+use progress_bar::spinner::Spinner;
+use progress_bar::{format, type_spinner};
+use progress_bar::type_spinner::Spinners;
 
 struct Bar {
     desc: String,
