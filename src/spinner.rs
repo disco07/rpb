@@ -1,18 +1,14 @@
 pub struct Spinner {
-    frames: Vec<&'static str>
+    frames: Vec<&'static str>,
 }
 
 impl Spinner {
     pub fn new(frames: Vec<&'static str>) -> Spinner {
-        Self {
-            frames,
-        }
+        Self { frames }
     }
 
     pub fn spinning_cursor(&self, index: usize) -> String {
-        let frame = self.frames.get(index%self.frames.len()).unwrap();
+        let frame = self.frames.get(index % self.frames.len()).unwrap();
         frame.to_string()
     }
 }
-
-
