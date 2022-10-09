@@ -1,12 +1,11 @@
 use std::io::Write;
-use std::thread::sleep;
 use std::time::{Duration, Instant};
 use rpb::color::{Colorizer};
 use rpb::spinner::Spinner;
 use rpb::{format, type_spinner};
 use rpb::type_spinner::Spinners;
 
-struct Bar {
+pub struct Bar {
     desc: String,
     state: State,
     option: Option,
@@ -73,7 +72,7 @@ impl Option {
 }
 
 impl Bar {
-    fn new(max: i64) -> Self {
+    pub fn new(max: i64) -> Self {
         Self {
             desc: "".to_string(),
             state: State::new(max),
@@ -147,7 +146,7 @@ impl Bar {
         stdout.flush().unwrap();
     }
 
-    fn add(&mut self, num: usize) {
+    pub fn add(&mut self, num: usize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
         assert!(self.state.current <= self.option.total, "current exceeds total");
@@ -158,13 +157,4 @@ impl Bar {
 
 fn get_percent(current: &i64, total: &i64) -> f64 {
     100.0 * (*current as f64) / (*total as f64)
-}
-
-fn main() {
-    let mut bar = Bar::new(100);
-
-    for _i in 0..100 {
-        sleep(Duration::from_millis(40));
-        bar.add(1);
-    }
 }
