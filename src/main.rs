@@ -1,10 +1,10 @@
 use std::io::Write;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
-use progress_bar::color::{Colorizer};
-use progress_bar::spinner::Spinner;
-use progress_bar::{format, type_spinner};
-use progress_bar::type_spinner::Spinners;
+use rpb::color::{Colorizer};
+use rpb::spinner::Spinner;
+use rpb::{format, type_spinner};
+use rpb::type_spinner::Spinners;
 
 struct Bar {
     desc: String,

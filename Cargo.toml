@@ -1,7 +1,10 @@
 [package]
-name = "progress_bar"
+name = "rpb"
 version = "0.1.0"
 edition = "2021"
+authors = ["Drissa KONE"]
+description = "A simple implementation of progress bar for rust"
+license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
