@@ -194,5 +194,6 @@ pub fn get_spinner(spinner: Spinners) -> Vec<&'static str> {
             "▅▄▃", "▄▃▂", "▃▂▁"
         ]
     ];
+    // arr_spinner.get(spinner as i32).unwrap().to_vec()
     arr_spinner.get(spinner_to_int(spinner)).unwrap().to_vec()
 }
