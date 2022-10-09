@@ -2,8 +2,11 @@
 name = "rpb"
 version = "0.1.0"
 edition = "2021"
-authors = ["Drissa KONE"]
+authors = ["disco07"]
 description = "A simple implementation of progress bar for rust"
+keywords = ["cli", "progress", "progressbar", "pb"]
+categories = ["command-line-interface"]
+repository = "https://github.com/disco07/rpb"
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
