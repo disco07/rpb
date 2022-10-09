@@ -1,9 +1,8 @@
+use crate::spinner::Spinner;
+use crate::type_spinner::Spinners;
+use crate::{format, type_spinner};
 use std::io::Write;
-use std::time::{Duration, Instant};
-use rpb::color::{Colorizer};
-use rpb::spinner::Spinner;
-use rpb::{format, type_spinner};
-use rpb::type_spinner::Spinners;
+use std::time::Instant;
 
 pub struct Bar {
     desc: String,
@@ -62,13 +61,11 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
-            spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical))
+            spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical)),
         }
     }
 
-    fn set(&self, spinner: Spinners) {
-
-    }
+    fn set(&self, spinner: Spinners) {}
 }
 
 impl Bar {
@@ -85,7 +82,11 @@ impl Bar {
         self.state.percent = get_percent(&self.state.current, &self.option.total);
 
         let desc_spacing = if self.desc == "" { "" } else { ": " };
-        let mut spacing = if self.state.percent >= 10.0 { " " } else { "  " };
+        let mut spacing = if self.state.percent >= 10.0 {
+            " "
+        } else {
+            "  "
+        };
 
         if self.state.percent >= 100.0 {
             spacing = "";
@@ -93,7 +94,8 @@ impl Bar {
 
         format!(
             "{}{}{}{}%{}",
-            self.desc, desc_spacing, spacing, self.state.percent as u64, self.theme.bar_start)
+            self.desc, desc_spacing, spacing, self.state.percent as u64, self.theme.bar_start
+        )
     }
 
     fn render_right_bar(&mut self) -> String {
@@ -102,7 +104,8 @@ impl Bar {
             white_space -= self.state.current_graph_rate as usize;
         }
         let time_elapsed = self.option.start_time.elapsed().as_secs();
-        let remaining_time = time_elapsed * (self.option.total - self.state.current) as u64 / self.state.current as u64;
+        let remaining_time = time_elapsed * (self.option.total - self.state.current) as u64
+            / self.state.current as u64;
         let mut it_per_s: u64 = 0;
         if time_elapsed >= 1 {
             it_per_s = (self.state.current as u64) / time_elapsed;
@@ -112,7 +115,9 @@ impl Bar {
             "{}{} {} [{}-{}, {} {}/s {}/{}]",
             " ".repeat(white_space),
             self.theme.bar_end,
-            self.option.spinner.spinning_cursor(self.state.current as usize),
+            self.option
+                .spinner
+                .spinning_cursor(self.state.current as usize),
             format::convert(time_elapsed),
             format::convert(remaining_time),
             it_per_s,
@@ -124,7 +129,8 @@ impl Bar {
 
     fn render_middle_bar(&mut self) -> String {
         self.state.percent = get_percent(&self.state.current, &self.option.total);
-        self.state.current_graph_rate = (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
+        self.state.current_graph_rate =
+            (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
 
         let n: usize = (self.state.current_graph_rate) as usize;
         self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
@@ -149,7 +155,10 @@ impl Bar {
     pub fn add(&mut self, num: usize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
-        assert!(self.state.current <= self.option.total, "current exceeds total");
+        assert!(
+            self.state.current <= self.option.total,
+            "current exceeds total"
+        );
         let (lbar, mbar, rbar) = self.render();
         self.print_bar(format!("\r{}{}{}", lbar, mbar, rbar))
     }
