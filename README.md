@@ -25,15 +25,15 @@ fn main() {
     use std::thread::sleep;
     use std::time;
     
-    let mut bar = Bar::new(100);
+    let mut bar = Bar::new(200);
 
-    for _i in 0..100 {
+    for _i in 0..200 {
         bar.add(1);
-        sleep(time::Duration::from_millis(100))
+        sleep(time::Duration::from_millis(50))
     }
 }
 ```
-![Basic bar](examples/basic/progressbar.gif)
+![Basic bar](images/basic.gif)
 
 ## Contributing 🤝
 Contributions, issues, and feature requests are welcome!
