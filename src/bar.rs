@@ -68,7 +68,31 @@ impl Option {
     fn set(&self, spinner: Spinners) {}
 }
 
+/// Core implementation of console progress bar.
+///
+/// # Example
+///
+/// A simple progress bar with a max value.
+///
+/// ```rust
+///
+/// fn main() {
+///     use rpb::bar::Bar;
+///     let mut pb = Bar::new(100);
+///
+///     for _ in 0..100 {
+///         pb.add(1);
+///     }
+/// }
+/// ```
 impl Bar {
+    /// Create a new instance of [Bar] with a max value.
+    ///
+    /// # Example
+    ///
+    /// ```rust
+    /// let mut pb = rpb::Bar::new(100);
+    /// ```
     pub fn new(max: i64) -> Self {
         Self {
             desc: "".to_string(),
@@ -152,6 +176,9 @@ impl Bar {
         stdout.flush().unwrap();
     }
 
+    /// Manually update the progress bar, useful for streams such as reading files.
+    ///
+    ///
     pub fn add(&mut self, num: usize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
