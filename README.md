@@ -1,4 +1,5 @@
 [![Rust](https://github.com/disco07/rpb/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/disco07/rpb/actions/workflows/rust.yml)
+[![Crates.io](https://img.shields.io/crates/v/rpb.svg)](https://crates.io/crates/rpb)
 # rpb
 A simple progress bar for Rust 🦀 projects. I created that because there was a long processes in some project and I didn't know what was the progression.
 
