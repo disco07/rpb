@@ -1,6 +1,6 @@
 [![Rust](https://github.com/disco07/rpb/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/disco07/rpb/actions/workflows/rust.yml)
 # rpb
-A simple progress bar for Rust projects. I created that because there was a long processes in some project and I didn't know what was the progression.
+A simple progress bar for Rust 🦀 projects. I created that because there was a long processes in some project and I didn't know what was the progression.
 
 ## Installation
 Add from command line.
