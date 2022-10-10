@@ -91,7 +91,8 @@ impl Bar {
     /// # Example
     ///
     /// ```rust
-    /// let mut pb = rpb::Bar::new(100);
+    /// use rpb::bar::Bar;
+    /// let mut pb = Bar::new(100);
     /// ```
     pub fn new(max: i64) -> Self {
         Self {
