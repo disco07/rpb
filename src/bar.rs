@@ -3,7 +3,7 @@ use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
 use std::io::Write;
 use std::time::Instant;
-use crate::styles::Styles;
+use crate::styles::{Styles, Themes};
 
 pub struct Bar {
     desc: String,
@@ -81,6 +81,23 @@ impl Bar {
             state: State::new(max),
             option: Option::new(max, Instant::now()),
             theme: Styles::new(),
+        }
+    }
+
+    pub fn set_theme(&mut self, theme: Themes) {
+        match theme {
+            Themes::Basic => {
+                self.theme.bar_type = '█';
+                self.theme.bar_start = '|';
+                self.theme.bar_end = '|';
+                self.theme.bar_width = 50;
+            },
+            Themes::Small => {
+                self.theme.bar_type = '━';
+                self.theme.bar_start = ' ';
+                self.theme.bar_end = ' ';
+                self.theme.bar_width = 80;
+            }
         }
     }
 
