@@ -53,6 +53,8 @@ impl Theme {
             bar_width,
         }
     }
+
+
 }
 
 impl Option {
@@ -137,12 +139,13 @@ impl Bar {
         }
 
         format!(
-            "{}{} {} [{}-{}, {} {}/s {}/{}]",
+            "{}{} {} [{}-{}, {} {}/s, {}/{}]",
             " ".repeat(white_space),
             self.theme.bar_end,
-            self.option
-                .spinner
-                .spinning_cursor(self.state.current as usize),
+            // self.option
+            //     .spinner
+            //     .spinning_cursor(self.state.current as usize)
+            "",
             format::convert(time_elapsed),
             format::convert(remaining_time),
             it_per_s,
