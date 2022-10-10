@@ -78,10 +78,10 @@ impl Option {
 ///
 /// fn main() {
 ///     use rpb::bar::Bar;
-///     let mut pb = Bar::new(100);
+///     let mut bar = Bar::new(100);
 ///
 ///     for _ in 0..100 {
-///         pb.add(1);
+///         bar.add(1);
 ///     }
 /// }
 /// ```
@@ -92,7 +92,7 @@ impl Bar {
     ///
     /// ```rust
     /// use rpb::bar::Bar;
-    /// let mut pb = Bar::new(100);
+    /// let mut bar = Bar::new(100);
     /// ```
     pub fn new(max: i64) -> Self {
         Self {
