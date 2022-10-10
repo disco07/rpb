@@ -3,12 +3,13 @@ use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
 use std::io::Write;
 use std::time::Instant;
+use crate::styles::{Styles, Themes};
 
 pub struct Bar {
     desc: String,
     state: State,
     option: Option,
-    theme: Theme,
+    theme: Styles,
 }
 
 struct State {
@@ -25,14 +26,6 @@ struct Option {
     // color: Colors
 }
 
-struct Theme {
-    rate: String,
-    bar_type: char,
-    bar_start: char,
-    bar_end: char,
-    bar_width: usize,
-}
-
 impl State {
     fn new(max: i64) -> State {
         Self {
@@ -41,20 +34,6 @@ impl State {
             current_graph_rate: 0,
         }
     }
-}
-
-impl Theme {
-    fn new(bar_type: char, bar_start: char, bar_end: char, bar_width: usize) -> Theme {
-        Self {
-            rate: "".to_string(),
-            bar_type,
-            bar_start,
-            bar_end,
-            bar_width,
-        }
-    }
-
-
 }
 
 impl Option {
@@ -101,7 +80,24 @@ impl Bar {
             desc: "".to_string(),
             state: State::new(max),
             option: Option::new(max, Instant::now()),
-            theme: Theme::new('█', '|', '|', 50),
+            theme: Styles::new(),
+        }
+    }
+
+    pub fn set_theme(&mut self, theme: Themes) {
+        match theme {
+            Themes::Basic => {
+                self.theme.bar_type = '█';
+                self.theme.bar_start = '|';
+                self.theme.bar_end = '|';
+                self.theme.bar_width = 50;
+            },
+            Themes::Small => {
+                self.theme.bar_type = '━';
+                self.theme.bar_start = ' ';
+                self.theme.bar_end = ' ';
+                self.theme.bar_width = 80;
+            }
         }
     }
 
@@ -181,8 +177,6 @@ impl Bar {
     }
 
     /// Manually update the progress bar, useful for streams such as reading files.
-    ///
-    ///
     pub fn add(&mut self, num: usize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
