@@ -1,6 +1,8 @@
 pub enum Themes {
     Basic,
     Small,
+    ColoredSmall,
+    ColoredMedium,
 }
 
 pub struct Styles {

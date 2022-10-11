@@ -25,6 +25,8 @@ struct Option {
     unit: String,
     start_time: Instant,
     spinner: Spinner,
+    front_colored: String,
+    back_colored: String,
     // color: Colors
 }
 
@@ -45,6 +47,8 @@ impl Option {
             unit: "it".to_string(),
             start_time: time,
             spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical)),
+            front_colored: "".to_string(),
+            back_colored: "".to_string(),
         }
     }
 }
@@ -93,12 +97,30 @@ impl Bar {
                 self.theme.bar_end = '|';
                 self.theme.bar_width = 50;
             }
+            Themes::ColoredMedium => {
+                self.theme.bar_type = '█';
+                self.theme.white_space = "█".to_string();
+                self.theme.bar_start = '|';
+                self.theme.bar_end = '|';
+                self.theme.bar_width = 50;
+                self.option.front_colored = "#fc4a1a".to_string();
+                self.option.back_colored = "#000000".to_string();
+            }
             Themes::Small => {
+                self.theme.bar_type = '━';
+                self.theme.white_space = " ".to_string();
+                self.theme.bar_start = ' ';
+                self.theme.bar_end = ' ';
+                self.theme.bar_width = 60;
+            }
+            Themes::ColoredSmall => {
                 self.theme.bar_type = '━';
                 self.theme.white_space = "━".to_string();
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
-                self.theme.bar_width = 80;
+                self.theme.bar_width = 60;
+                self.option.front_colored = "#fc4a1a".to_string();
+                self.option.back_colored = "#000000".to_string();
             }
         }
     }
@@ -135,11 +157,17 @@ impl Bar {
         if time_elapsed >= 1 {
             it_per_s = (self.state.current as u64) / time_elapsed;
         }
+        let background: String;
+        if self.option.back_colored != "" {
+            background = self.theme.white_space.repeat(white_space).colorize(self.option.back_colored.as_str());
+        } else {
+            background = self.theme.white_space.repeat(white_space);
+        }
 
         format!(
             "{}{} {} [{}-{}, {} {}/s, {}/{}]",
-            self.theme.white_space.repeat(white_space),
-            self.theme.bar_end,
+            background,
+            self.theme.bar_end.to_string().as_str(),
             // self.option
             //     .spinner
             //     .spinning_cursor(self.state.current as usize)
@@ -159,7 +187,11 @@ impl Bar {
             (self.state.percent / 100.0 * (self.theme.bar_width as f64)).round() as isize;
 
         let n: usize = (self.state.current_graph_rate) as usize;
-        self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
+        if self.option.front_colored != "" {
+            self.theme.rate = format!("{}", self.theme.bar_type).repeat(n).colorize(self.option.front_colored.as_str());
+        } else {
+            self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
+        }
 
         format!("{}", self.theme.rate)
     }
