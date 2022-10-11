@@ -1,10 +1,10 @@
+use crate::color::Colorizer;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
 use std::io::Write;
 use std::time::Instant;
-use crate::color::Colorizer;
 
 pub struct Bar {
     desc: String,
@@ -165,7 +165,11 @@ impl Bar {
         }
         let background: String;
         if self.option.back_colored != "" {
-            background = self.theme.white_space.repeat(white_space).colorize(self.option.back_colored.as_str());
+            background = self
+                .theme
+                .white_space
+                .repeat(white_space)
+                .colorize(self.option.back_colored.as_str());
         } else {
             background = self.theme.white_space.repeat(white_space);
         }
@@ -194,7 +198,9 @@ impl Bar {
 
         let n: usize = (self.state.current_graph_rate) as usize;
         if self.option.front_colored != "" {
-            self.theme.rate = format!("{}", self.theme.bar_type).repeat(n).colorize(self.option.front_colored.as_str());
+            self.theme.rate = format!("{}", self.theme.bar_type)
+                .repeat(n)
+                .colorize(self.option.front_colored.as_str());
         } else {
             self.theme.rate = format!("{}", self.theme.bar_type).repeat(n);
         }
@@ -215,7 +221,13 @@ impl Bar {
         if self.option.position == 0 {
             stdout.write_fmt(format_args!("\r{}", string)).unwrap();
         } else {
-            stdout.write_fmt(format_args!("{}{}", "\n".repeat(self.option.position as usize), string)).unwrap();
+            stdout
+                .write_fmt(format_args!(
+                    "{}{}",
+                    "\n".repeat(self.option.position as usize),
+                    string
+                ))
+                .unwrap();
         }
         stdout.flush().unwrap();
     }
