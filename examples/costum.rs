@@ -10,6 +10,8 @@ fn main() {
     bar.set_theme(Themes::Small);
     bar2.set_theme(Themes::ColoredSmall);
     bar3.set_theme(Themes::ColoredMedium);
+    bar2.set_position(2);
+    bar3.set_position(4);
     for _i in 0..100 {
         bar.add(1);
         bar2.add(1);
