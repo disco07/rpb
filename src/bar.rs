@@ -4,6 +4,7 @@ use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
 use std::io::Write;
 use std::time::Instant;
+use crate::color::Colorizer;
 
 pub struct Bar {
     desc: String,
@@ -94,7 +95,7 @@ impl Bar {
             }
             Themes::Small => {
                 self.theme.bar_type = '━';
-                self.theme.white_space = " ".to_string();
+                self.theme.white_space = "━".to_string();
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
                 self.theme.bar_width = 80;
