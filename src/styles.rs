@@ -5,6 +5,7 @@ pub enum Themes {
 
 pub struct Styles {
     pub rate: String,
+    pub white_space: String,
     pub bar_type: char,
     pub bar_start: char,
     pub bar_end: char,
@@ -21,12 +22,13 @@ impl Styles {
 
 impl Default for Styles {
     fn default() -> Self {
-        Self{
+        Self {
             rate: "".to_string(),
+            white_space: " ".to_string(),
             bar_type: '█',
             bar_start: '|',
             bar_end: '|',
-            bar_width: 50
+            bar_width: 50,
         }
     }
 }

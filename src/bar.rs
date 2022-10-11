@@ -1,9 +1,9 @@
 use crate::spinner::Spinner;
+use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
 use std::io::Write;
 use std::time::Instant;
-use crate::styles::{Styles, Themes};
 
 pub struct Bar {
     desc: String,
@@ -18,6 +18,7 @@ struct State {
     current_graph_rate: isize,
 }
 
+#[allow(dead_code)]
 struct Option {
     total: i64,
     unit: String,
@@ -45,8 +46,6 @@ impl Option {
             spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical)),
         }
     }
-
-    fn set(&self, spinner: Spinners) {}
 }
 
 /// Core implementation of console progress bar.
@@ -88,12 +87,14 @@ impl Bar {
         match theme {
             Themes::Basic => {
                 self.theme.bar_type = '█';
+                self.theme.white_space = " ".to_string();
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
                 self.theme.bar_width = 50;
-            },
+            }
             Themes::Small => {
                 self.theme.bar_type = '━';
+                self.theme.white_space = " ".to_string();
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
                 self.theme.bar_width = 80;
@@ -136,7 +137,7 @@ impl Bar {
 
         format!(
             "{}{} {} [{}-{}, {} {}/s, {}/{}]",
-            " ".repeat(white_space),
+            self.theme.white_space.repeat(white_space),
             self.theme.bar_end,
             // self.option
             //     .spinner
