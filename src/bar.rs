@@ -27,6 +27,7 @@ struct Option {
     spinner: Spinner,
     front_colored: String,
     back_colored: String,
+    position: u32,
     // color: Colors
 }
 
@@ -49,6 +50,7 @@ impl Option {
             spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical)),
             front_colored: "".to_string(),
             back_colored: "".to_string(),
+            position: 0,
         }
     }
 }
@@ -123,6 +125,10 @@ impl Bar {
                 self.option.back_colored = "#000000".to_string();
             }
         }
+    }
+
+    pub fn set_position(&mut self, position: u32) {
+        self.option.position = position
     }
 
     fn render_left_bar(&mut self) -> String {
@@ -206,7 +212,11 @@ impl Bar {
 
     fn print_bar(&mut self, string: String) {
         let mut stdout = std::io::stdout();
-        stdout.write_fmt(format_args!("{}", string)).unwrap();
+        if self.option.position == 0 {
+            stdout.write_fmt(format_args!("\r{}", string)).unwrap();
+        } else {
+            stdout.write_fmt(format_args!("{}{}", "\n".repeat(self.option.position as usize), string)).unwrap();
+        }
         stdout.flush().unwrap();
     }
 
@@ -219,7 +229,7 @@ impl Bar {
             "current exceeds total"
         );
         let (lbar, mbar, rbar) = self.render();
-        self.print_bar(format!("\r{}{}{}", lbar, mbar, rbar))
+        self.print_bar(format!("{}{}{}", lbar, mbar, rbar))
     }
 }
 
