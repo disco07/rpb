@@ -17,7 +17,6 @@ pub enum Spinners {
     Men,
     Weather,
     Point,
-    Grow,
 }
 
 fn spinner_to_int(spinner: Spinners) -> usize {
@@ -64,21 +63,6 @@ pub fn get_spinner(spinner: Spinners) -> Vec<&'static str> {
             "☁️", "🌥", "⛅️", "🌤", "☀️", "☀️",
         ],
         vec!["∙∙∙", "●∙∙", "∙●∙", "∙∙●", "∙∙∙"],
-        vec![
-            "▁▂▃",
-            "▂▃▄",
-            "▃▄▅",
-            "▄▅▆",
-            "▅▆▇",
-            "▆▇█",
-            "▇█▇",
-            "█▇▆",
-            "▇▆▅",
-            "▆▅▄",
-            "▅▄▃",
-            "▄▃▂",
-            "▃▂▁",
-        ],
     ];
     // arr_spinner.get(spinner as i32).unwrap().to_vec()
     arr_spinner.get(spinner_to_int(spinner)).unwrap().to_vec()
