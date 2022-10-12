@@ -1,9 +1,9 @@
 use crate::color::Colorizer;
+use crate::printer::Output;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
-use crate::{format, type_spinner};
-use std::io::Write;
+use crate::{format, printer, type_spinner};
 use std::time::Instant;
 
 pub struct Bar {
@@ -25,10 +25,10 @@ struct Option {
     unit: String,
     start_time: Instant,
     spinner: Spinner,
+    out: Output,
     front_colored: String,
     back_colored: String,
     position: u32,
-    // color: Colors
 }
 
 impl State {
@@ -48,6 +48,7 @@ impl Option {
             unit: "it".to_string(),
             start_time: time,
             spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical)),
+            out: Output::Stderr,
             front_colored: "".to_string(),
             back_colored: "".to_string(),
             position: 0,
@@ -216,26 +217,28 @@ impl Bar {
         return (lbar, mbar, rbar);
     }
 
-    fn print_bar(&mut self, string: String) {
-        let mut stdout = std::io::stdout();
+    fn print_bar(&self, string: String) {
         if self.option.position == 0 {
-            stdout.write_fmt(format_args!("\r{}", string)).unwrap();
+            match self.option.out {
+                Output::Stderr => printer::write_to_stderr(format_args!("\r{}", string)),
+                Output::Stdout => printer::write_to_stdout(format_args!("\r{}", string)),
+            }
         } else {
-            let rline = if self.state.current <= 1 {
-                "\n".repeat(self.option.position as usize)
-            }else {
-                "\r".repeat(self.option.position as usize)
-            };
-            stdout
-                .write_fmt(format_args!(
-                    "{}{}",
-                    rline,
-                    string
-                ))
-                .unwrap();
+            match self.option.out {
+                Output::Stderr => printer::write_to_stderr(format_args!(
+                    "{}{}{}",
+                    "\n".repeat(self.option.position as usize),
+                    string,
+                    format!("\x1b[{}A", self.option.position)
+                )),
+                Output::Stdout => printer::write_to_stdout(format_args!(
+                    "{}{}{}",
+                    "\n".repeat(self.option.position as usize),
+                    string,
+                    format!("\x1b[{}A", self.option.position)
+                )),
+            }
         }
-        stdout.flush().unwrap();
-        //self.option.position = 0;
     }
 
     /// Manually update the progress bar, useful for streams such as reading files.
