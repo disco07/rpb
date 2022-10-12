@@ -221,15 +221,21 @@ impl Bar {
         if self.option.position == 0 {
             stdout.write_fmt(format_args!("\r{}", string)).unwrap();
         } else {
+            let rline = if self.state.current <= 1 {
+                "\n".repeat(self.option.position as usize)
+            }else {
+                "\r".repeat(self.option.position as usize)
+            };
             stdout
                 .write_fmt(format_args!(
                     "{}{}",
-                    "\n".repeat(self.option.position as usize),
+                    rline,
                     string
                 ))
                 .unwrap();
         }
         stdout.flush().unwrap();
+        //self.option.position = 0;
     }
 
     /// Manually update the progress bar, useful for streams such as reading files.
