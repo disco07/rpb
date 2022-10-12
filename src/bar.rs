@@ -98,14 +98,14 @@ impl Bar {
                 self.theme.white_space = " ".to_string();
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
-                self.theme.bar_width = 60;
+                self.theme.bar_width = 80;
             }
             Themes::ColoredMedium => {
                 self.theme.bar_type = '█';
                 self.theme.white_space = "█".to_string();
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
-                self.theme.bar_width = 60;
+                self.theme.bar_width = 80;
                 self.option.front_colored = "#fc4a1a".to_string();
                 self.option.back_colored = "#000000".to_string();
             }
@@ -114,14 +114,14 @@ impl Bar {
                 self.theme.white_space = " ".to_string();
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
-                self.theme.bar_width = 60;
+                self.theme.bar_width = 80;
             }
             Themes::ColoredSmall => {
                 self.theme.bar_type = '━';
                 self.theme.white_space = "━".to_string();
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
-                self.theme.bar_width = 60;
+                self.theme.bar_width = 80;
                 self.option.front_colored = "#fc4a1a".to_string();
                 self.option.back_colored = "#000000".to_string();
             }
