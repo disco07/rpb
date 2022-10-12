@@ -106,7 +106,7 @@ impl Bar {
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
                 self.theme.bar_width = 80;
-                self.option.front_colored = "#fc4a1a".to_string();
+                self.option.front_colored = "#ACB6E5".to_string();
                 self.option.back_colored = "#000000".to_string();
             }
             Themes::Small => {
@@ -122,7 +122,7 @@ impl Bar {
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
                 self.theme.bar_width = 80;
-                self.option.front_colored = "#fc4a1a".to_string();
+                self.option.front_colored = "#ACB6E5".to_string();
                 self.option.back_colored = "#000000".to_string();
             }
         }
