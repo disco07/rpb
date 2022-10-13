@@ -1,17 +1,18 @@
 [![Rust](https://github.com/disco07/rpb/actions/workflows/rust.yml/badge.svg?branch=main)](https://github.com/disco07/rpb/actions/workflows/rust.yml)
 [![Crates.io](https://img.shields.io/crates/v/rpb.svg)](https://crates.io/crates/rpb)
+[![Documentation](https://docs.rs/rpb/badge.svg)](https://docs.rs/rpb/)
 # rpb
 A simple progress bar for Rust 🦀 projects. I created that because there was a long processes in some project and I didn't know what was the progression.
 
 ## Installation
 Add from command line.
 ```
-cargo add rpb@0.1.1
+cargo add rpb@0.1.4
 ```
 Or add this to your Cargo.toml file.
 ```
 [dependencies]
-rpb = "0.1.1"
+rpb = "0.1.4"
 
 # Or add from github main branch.
 rpb = { git = "https://github.com/disco07/rpb.git", branch = "main" }
