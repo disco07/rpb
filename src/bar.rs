@@ -179,10 +179,10 @@ impl Bar {
             "{}{} {} [{}-{}, {} {}/s, {}/{}]",
             background,
             self.theme.bar_end.to_string().as_str(),
-            // self.option
-            //     .spinner
-            //     .spinning_cursor(self.state.current as usize)
-            "",
+            self.option
+                .spinner
+                .spinning_cursor(self.state.current as usize)
+            ,
             format::convert(time_elapsed),
             format::convert(remaining_time),
             it_per_s,
