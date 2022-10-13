@@ -223,7 +223,7 @@ impl Bar {
                     "{}{}{}",
                     "\n".repeat(self.option.position as usize),
                     string,
-                    format!("\x1b[{}A", self.option.position)
+                    format!("\x1B[{}A", self.option.position)
                 )
             );
         }
