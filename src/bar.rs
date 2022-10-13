@@ -1,9 +1,8 @@
 use crate::color::Colorizer;
-use crate::printer::Output;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
-use crate::{format, printer, type_spinner};
+use crate::{format, type_spinner};
 use std::time::Instant;
 
 pub struct Bar {
@@ -25,7 +24,6 @@ struct Option {
     unit: String,
     start_time: Instant,
     spinner: Spinner,
-    out: Output,
     front_colored: String,
     back_colored: String,
     position: u32,
@@ -47,8 +45,7 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
-            spinner: Spinner::new(type_spinner::get_spinner(Spinners::GrowVertical)),
-            out: Output::Stderr,
+            spinner: Spinner::new(type_spinner::get_spinner(Spinners::Earth)),
             front_colored: "".to_string(),
             back_colored: "".to_string(),
             position: 0,
@@ -181,8 +178,7 @@ impl Bar {
             self.theme.bar_end.to_string().as_str(),
             self.option
                 .spinner
-                .spinning_cursor(self.state.current as usize)
-            ,
+                .spinning_cursor(self.state.current as usize),
             format::convert(time_elapsed),
             format::convert(remaining_time),
             it_per_s,
@@ -219,25 +215,13 @@ impl Bar {
 
     fn print_bar(&self, string: String) {
         if self.option.position == 0 {
-            match self.option.out {
-                Output::Stderr => printer::write_to_stderr(format_args!("\r{}", string)),
-                Output::Stdout => printer::write_to_stdout(format_args!("\r{}", string)),
-            }
+            eprint!("{}", format_args!("\r{}", string));
         } else {
-            match self.option.out {
-                Output::Stderr => printer::write_to_stderr(format_args!(
+            eprint!("{}", format_args!(
                     "{}{}{}",
                     "\n".repeat(self.option.position as usize),
                     string,
-                    format!("\x1b[{}A", self.option.position)
-                )),
-                Output::Stdout => printer::write_to_stdout(format_args!(
-                    "{}{}{}",
-                    "\n".repeat(self.option.position as usize),
-                    string,
-                    format!("\x1b[{}A", self.option.position)
-                )),
-            }
+                    format!("\x1b[{}A", self.option.position)));
         }
     }
 
