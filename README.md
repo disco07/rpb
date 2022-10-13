@@ -35,6 +35,8 @@ fn main() {
 }
 ```
 ![Basic bar](images/basic.gif)
+[examples/custom.rs](examples/custom.rs)
+![Custom bar](images/custom.gif)
 
 ## Contributing 🤝
 Contributions, issues, and feature requests are welcome!
