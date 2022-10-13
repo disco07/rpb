@@ -37,7 +37,6 @@ fn spinner_to_int(spinner: Spinners) -> usize {
         Men => 12,
         Weather => 13,
         Point => 14,
-        Grow => 15,
     }
 }
 
