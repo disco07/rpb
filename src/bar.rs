@@ -149,6 +149,11 @@ impl Bar {
         self.option.position = position
     }
 
+    /// Sets description of progress bar.
+    pub fn set_description(&mut self, desc: &str) {
+        self.desc = desc.to_string()
+    }
+
     fn render_left_bar(&mut self) -> String {
         self.state.percent = get_percent(&self.state.current, &self.option.total);
 
