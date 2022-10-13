@@ -106,6 +106,7 @@ impl Bar {
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
                 self.theme.bar_width = 80;
+                self.set_spinner(Spinners::Point);
             }
             Themes::ColoredMedium => {
                 self.theme.bar_type = '█';
@@ -113,8 +114,8 @@ impl Bar {
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
                 self.theme.bar_width = 80;
-                self.option.front_colored = "#6f0000".to_string();
-                //self.option.back_colored = "#000000".to_string();
+                self.option.front_colored = "#021B79".to_string();
+                self.set_spinner(Spinners::Weather);
             }
             Themes::Small => {
                 self.theme.bar_type = '━';
@@ -122,6 +123,7 @@ impl Bar {
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
                 self.theme.bar_width = 80;
+                self.set_spinner(Spinners::Dots3);
             }
             Themes::ColoredSmall => {
                 self.theme.bar_type = '━';
@@ -130,7 +132,7 @@ impl Bar {
                 self.theme.bar_end = ' ';
                 self.theme.bar_width = 80;
                 self.option.front_colored = "#0f3443".to_string();
-                //self.option.back_colored = "#000000".to_string();
+                self.set_spinner(Spinners::Dots4);
             }
         }
     }
@@ -147,6 +149,16 @@ impl Bar {
     /// ```
     pub fn set_position(&mut self, position: u32) {
         self.option.position = position
+    }
+
+    /// Sets description of progress bar.
+    pub fn set_description(&mut self, desc: &str) {
+        self.desc = desc.to_string()
+    }
+
+    /// Sets spinner of progress bar.
+    pub fn set_spinner(&mut self, spinner: Spinners) {
+        self.option.spinner = Spinner::new(type_spinner::get_spinner(spinner))
     }
 
     fn render_left_bar(&mut self) -> String {
@@ -193,7 +205,7 @@ impl Bar {
         }
 
         format!(
-            "{}{} {} [{}-{}, {} {}/s, {}/{}]",
+            "{}{} {}  [{}-{}, {} {}/s, {}/{}]",
             background,
             self.theme.bar_end.to_string().as_str(),
             self.option
