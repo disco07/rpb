@@ -217,11 +217,15 @@ impl Bar {
         if self.option.position == 0 {
             eprint!("{}", format_args!("\r{}", string));
         } else {
-            eprint!("{}", format_args!(
+            eprint!(
+                "{}",
+                format_args!(
                     "{}{}{}",
                     "\n".repeat(self.option.position as usize),
                     string,
-                    format!("\x1b[{}A", self.option.position)));
+                    format!("\x1B[{}A", self.option.position)
+                )
+            );
         }
     }
 
