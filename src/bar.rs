@@ -88,6 +88,16 @@ impl Bar {
         }
     }
 
+    /// Instantiate a new theme.
+    ///
+    ///  # Example
+    ///
+    /// ```rust
+    /// use rpb::bar::Bar;
+    /// use rpb::styles::Themes;
+    /// let mut bar = Bar::new(100);
+    /// bar.set_theme(Themes::Small);
+    /// ```
     pub fn set_theme(&mut self, theme: Themes) {
         match theme {
             Themes::Basic => {
@@ -125,6 +135,16 @@ impl Bar {
         }
     }
 
+    /// Sets the position of the progress bar.
+    /// By default, the progress bar are position 0.
+    ///
+    ///  # Example
+    ///
+    /// ```rust
+    /// use rpb::bar::Bar;
+    /// let mut bar = Bar::new(100);
+    /// bar.set_position(1)
+    /// ```
     pub fn set_position(&mut self, position: u32) {
         self.option.position = position
     }
@@ -229,7 +249,7 @@ impl Bar {
         }
     }
 
-    /// Manually update the progress bar, useful for streams such as reading files.
+    /// Manually update the progress bar, advances the position by `num`.
     pub fn add(&mut self, num: usize) {
         assert!(self.option.total > 0, "the max must be greater than zero");
         self.state.current += num as i64;
