@@ -1,3 +1,6 @@
+use std::fs::File;
+use std::io;
+use std::io::Write;
 use crate::color::Colorizer;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
@@ -45,11 +48,22 @@ impl Option {
             total,
             unit: "it".to_string(),
             start_time: time,
-            spinner: Spinner::new(type_spinner::get_spinner(Spinners::Earth)),
+            spinner: Spinner::new(type_spinner::get_spinner(Spinners::Point)),
             front_colored: "".to_string(),
             back_colored: "".to_string(),
             position: 0,
         }
+    }
+}
+
+impl<T: Write> Write for Bar {
+    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+        let n = buf.len();
+        self.add(n);
+        Ok(n)
+    }
+    fn flush(&mut self) -> io::Result<()> {
+        Ok(())
     }
 }
 
@@ -159,6 +173,11 @@ impl Bar {
     /// Sets spinner of progress bar.
     pub fn set_spinner(&mut self, spinner: Spinners) {
         self.option.spinner = Spinner::new(type_spinner::get_spinner(spinner))
+    }
+
+    /// Increment current value of one.
+    pub fn inc(&mut self) {
+        self.add(1)
     }
 
     fn render_left_bar(&mut self) -> String {
