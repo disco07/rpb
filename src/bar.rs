@@ -267,7 +267,7 @@ impl Bar {
                 .spinning_cursor(self.state.current as usize),
             format::convert(time_elapsed),
             format::convert(remaining_time),
-            units.iter().map(|x| x).collect::<&str>(),
+            units.into_iter().map(|x| x).collect::<String>(),
             self.state.current,
             self.option.total
         )
