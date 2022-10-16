@@ -3,9 +3,6 @@ use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
-use std::fs::File;
-use std::io;
-use std::io::Write;
 use std::time::Instant;
 
 macro_rules! unit_fmt {
@@ -15,7 +12,7 @@ macro_rules! unit_fmt {
             $n if $n as f64 >= kilo_bytes.powf(4_f64) => format!("{:.*} TB", 2, $n as f64 / kilo_bytes.powf(4_f64)),
             $n if $n as f64 >= kilo_bytes.powf(3_f64) => format!("{:.*} GB", 2, $n as f64 / kilo_bytes.powf(3_f64)),
             $n if $n as f64 >= kilo_bytes.powf(2_f64) => format!("{:.*} MB", 2, $n as f64 / kilo_bytes.powf(2_f64)),
-            $n if $n as f64 >= kilo_bytes => format!("{:.*} KB", 2, $n as f64 / kb),
+            $n if $n as f64 >= kilo_bytes => format!("{:.*} KB", 2, $n as f64 / kilo_bytes),
             _ => format!("{:.*} B", 0, $n),
         }
     }};
