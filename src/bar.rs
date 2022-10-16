@@ -8,14 +8,14 @@ use std::io;
 use std::io::Write;
 use std::time::Instant;
 
-macro_rules! kb_fmt {
+macro_rules! unit_fmt {
     ($n: ident) => {{
-        let kb = 1024_f64;
+        let kilo_bytes = 1024_f64;
         match $n {
-            $n if $n as f64 >= kb.powf(4_f64) => format!("{:.*} TB", 2, $n as f64 / kb.powf(4_f64)),
-            $n if $n as f64 >= kb.powf(3_f64) => format!("{:.*} GB", 2, $n as f64 / kb.powf(3_f64)),
-            $n if $n as f64 >= kb.powf(2_f64) => format!("{:.*} MB", 2, $n as f64 / kb.powf(2_f64)),
-            $n if $n as f64 >= kb => format!("{:.*} KB", 2, $n as f64 / kb),
+            $n if $n as f64 >= kilo_bytes.powf(4_f64) => format!("{:.*} TB", 2, $n as f64 / kilo_bytes.powf(4_f64)),
+            $n if $n as f64 >= kilo_bytes.powf(3_f64) => format!("{:.*} GB", 2, $n as f64 / kilo_bytes.powf(3_f64)),
+            $n if $n as f64 >= kilo_bytes.powf(2_f64) => format!("{:.*} MB", 2, $n as f64 / kilo_bytes.powf(2_f64)),
+            $n if $n as f64 >= kilo_bytes => format!("{:.*} KB", 2, $n as f64 / kb),
             _ => format!("{:.*} B", 0, $n),
         }
     }};
@@ -252,7 +252,7 @@ impl Bar {
 
         match self.option.unit {
             Units::Default => units.push(format!("{:.*}it/s", 2, it_per_s)),
-            Units::Bytes => units.push(format!("{}/s", kb_fmt!(it_per_s))),
+            Units::Bytes => units.push(format!("{}/s", unit_fmt!(it_per_s))),
         };
 
         format!(
