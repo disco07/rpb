@@ -1,11 +1,11 @@
-use std::fs::File;
-use std::io;
-use std::io::Write;
 use crate::color::Colorizer;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
+use std::fs::File;
+use std::io;
+use std::io::Write;
 use std::time::Instant;
 
 macro_rules! kb_fmt {
@@ -254,7 +254,6 @@ impl Bar {
             Units::Default => units.push(format!("{:.*}it/s", 2, it_per_s)),
             Units::Bytes => units.push(format!("{}/s", kb_fmt!(it_per_s))),
         };
-
 
         format!(
             "{}{} {}  [{}-{}, {}, {}/{}]",

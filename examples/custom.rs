@@ -9,7 +9,6 @@ fn main() {
     let mut bar3 = Bar::new(100);
     let mut bar4 = Bar::new(100);
 
-
     bar.set_theme(Themes::Basic);
     bar.set_description("bar1");
 
