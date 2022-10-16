@@ -8,6 +8,19 @@ use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
 use std::time::Instant;
 
+macro_rules! kb_fmt {
+    ($n: ident) => {{
+        let kb = 1024_f64;
+        match $n {
+            $n if $n as f64 >= kb.powf(4_f64) => format!("{:.*} TB", 2, $n as f64 / kb.powf(4_f64)),
+            $n if $n as f64 >= kb.powf(3_f64) => format!("{:.*} GB", 2, $n as f64 / kb.powf(3_f64)),
+            $n if $n as f64 >= kb.powf(2_f64) => format!("{:.*} MB", 2, $n as f64 / kb.powf(2_f64)),
+            $n if $n as f64 >= kb => format!("{:.*} KB", 2, $n as f64 / kb),
+            _ => format!("{:.*} B", 0, $n),
+        }
+    }};
+}
+
 pub struct Bar {
     desc: String,
     state: State,
@@ -21,10 +34,18 @@ struct State {
     current_graph_rate: isize,
 }
 
+// Output type format, indicate which format wil be used in
+// the speed box.
+#[derive(Debug)]
+pub enum Units {
+    Default,
+    Bytes,
+}
+
 #[allow(dead_code)]
 struct Option {
     total: i64,
-    unit: String,
+    unit: Units,
     start_time: Instant,
     spinner: Spinner,
     front_colored: String,
@@ -46,24 +67,13 @@ impl Option {
     fn new(total: i64, time: Instant) -> Option {
         Self {
             total,
-            unit: "it".to_string(),
+            unit: Units::Default,
             start_time: time,
             spinner: Spinner::new(type_spinner::get_spinner(Spinners::Point)),
             front_colored: "".to_string(),
             back_colored: "".to_string(),
             position: 0,
         }
-    }
-}
-
-impl<T: Write> Write for Bar {
-    fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-        let n = buf.len();
-        self.add(n);
-        Ok(n)
-    }
-    fn flush(&mut self) -> io::Result<()> {
-        Ok(())
     }
 }
 
@@ -180,6 +190,21 @@ impl Bar {
         self.add(1)
     }
 
+    /// Set units, default is simple numbers
+    ///
+    /// # Examples
+    ///
+    /// ```rust
+    /// use rpb::bar::{Bar, Units};
+    ///
+    /// let n_bytes = 100;
+    /// let mut bar = Bar::new(n_bytes);
+    /// pb.set_unit(Units::Bytes);
+    /// ```
+    pub fn set_unit(&mut self, u: Units) {
+        self.option.unit = u;
+    }
+
     fn render_left_bar(&mut self) -> String {
         self.state.percent = get_percent(&self.state.current, &self.option.total);
 
@@ -202,6 +227,8 @@ impl Bar {
 
     fn render_right_bar(&mut self) -> String {
         let mut white_space = self.theme.bar_width;
+        let mut units = Vec::new();
+
         if self.state.current >= 1 {
             white_space -= self.state.current_graph_rate as usize;
         }
@@ -223,8 +250,16 @@ impl Bar {
             background = self.theme.white_space.repeat(white_space);
         }
 
+        // speed box
+
+            match self.option.unit {
+                Units::Default => units.push(format!("{:.*}it/s", 2, it_per_s)),
+                Units::Bytes => units.push(format!("{}/s", kb_fmt!(it_per_s))),
+            };
+
+
         format!(
-            "{}{} {}  [{}-{}, {} {}/s, {}/{}]",
+            "{}{} {}  [{}-{}, {:?}, {}/{}]",
             background,
             self.theme.bar_end.to_string().as_str(),
             self.option
@@ -232,8 +267,7 @@ impl Bar {
                 .spinning_cursor(self.state.current as usize),
             format::convert(time_elapsed),
             format::convert(remaining_time),
-            it_per_s,
-            self.option.unit,
+            units.iter().map(|x| x).collect::<&str>(),
             self.state.current,
             self.option.total
         )
