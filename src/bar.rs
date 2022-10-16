@@ -196,7 +196,7 @@ impl Bar {
     ///
     /// let n_bytes = 100;
     /// let mut bar = Bar::new(n_bytes);
-    /// pb.set_unit(Units::Bytes);
+    /// bar.set_unit(Units::Bytes);
     /// ```
     pub fn set_unit(&mut self, u: Units) {
         self.option.unit = u;
