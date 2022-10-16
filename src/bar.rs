@@ -250,16 +250,14 @@ impl Bar {
             background = self.theme.white_space.repeat(white_space);
         }
 
-        // speed box
-
-            match self.option.unit {
-                Units::Default => units.push(format!("{:.*}it/s", 2, it_per_s)),
-                Units::Bytes => units.push(format!("{}/s", kb_fmt!(it_per_s))),
-            };
+        match self.option.unit {
+            Units::Default => units.push(format!("{:.*}it/s", 2, it_per_s)),
+            Units::Bytes => units.push(format!("{}/s", kb_fmt!(it_per_s))),
+        };
 
 
         format!(
-            "{}{} {}  [{}-{}, {:?}, {}/{}]",
+            "{}{} {}  [{}-{}, {}, {}/{}]",
             background,
             self.theme.bar_end.to_string().as_str(),
             self.option
