@@ -109,6 +109,31 @@ impl Bar {
         }
     }
 
+    /// DefaultBytes provides a progressbar to measure byte
+    /// throughput with recommended defaults.
+    ///
+    /// # Example:
+    /// ```rust
+    /// use rpb::bar::Bar;
+    /// let mut bar = Bar::default_bytes(100, "downloading");
+    /// ```
+    pub fn default_bytes(max_bytes: i64, desc: &str) -> Bar {
+        Self {
+            desc: desc.to_string(),
+            state: State::new(max_bytes),
+            option: Option {
+                total: max_bytes,
+                unit: Units::Bytes,
+                start_time: Instant::now(),
+                spinner: Spinner::new(type_spinner::get_spinner(Spinners::Point)),
+                front_colored: "".to_string(),
+                back_colored: "".to_string(),
+                position: 0
+            },
+            theme: Default::default()
+        }
+    }
+
     /// Instantiate a new theme.
     ///
     ///  # Example
