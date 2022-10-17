@@ -255,7 +255,7 @@ impl Bar {
     /// use rpb::bar::Units;
     ///
     /// fn main () -> io::Result<()> {
-    ///     let sre = File::open("src.txt")?;
+    ///     let src = File::open("src.txt")?;
     ///     let mut tgt = File::create("tgt.txt")?;
     ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
     ///     bar.set_unit(Units::Bytes);
@@ -281,7 +281,7 @@ impl Bar {
     /// use rpb::bar::Units;
     ///
     /// fn main () -> io::Result<()> {
-    ///     let sre = File::open("src.txt")?;
+    ///     let mut src = File::open("src.txt")?;
     ///     let mut tgt = File::create("tgt.txt")?;
     ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
     ///     bar.set_unit(Units::Bytes);
