@@ -1,5 +1,5 @@
-use std::io;
 use crate::bar::Bar;
+use std::io;
 
 #[derive(Debug)]
 pub struct BarIter<T> {

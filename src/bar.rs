@@ -1,20 +1,26 @@
-use std::fmt::{Debug, Formatter};
-use std::io;
 use crate::color::Colorizer;
+use crate::iterator::BarIter;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
+use std::fmt::{Debug, Formatter};
+use std::io;
 use std::time::Instant;
-use crate::iterator::BarIter;
 
 macro_rules! unit_fmt {
     ($n: ident) => {{
         let kilo_bytes = 1024_f64;
         match $n {
-            $n if $n as f64 >= kilo_bytes.powf(4_f64) => format!("{:.*} TB", 2, $n as f64 / kilo_bytes.powf(4_f64)),
-            $n if $n as f64 >= kilo_bytes.powf(3_f64) => format!("{:.*} GB", 2, $n as f64 / kilo_bytes.powf(3_f64)),
-            $n if $n as f64 >= kilo_bytes.powf(2_f64) => format!("{:.*} MB", 2, $n as f64 / kilo_bytes.powf(2_f64)),
+            $n if $n as f64 >= kilo_bytes.powf(4_f64) => {
+                format!("{:.*} TB", 2, $n as f64 / kilo_bytes.powf(4_f64))
+            }
+            $n if $n as f64 >= kilo_bytes.powf(3_f64) => {
+                format!("{:.*} GB", 2, $n as f64 / kilo_bytes.powf(3_f64))
+            }
+            $n if $n as f64 >= kilo_bytes.powf(2_f64) => {
+                format!("{:.*} MB", 2, $n as f64 / kilo_bytes.powf(2_f64))
+            }
             $n if $n as f64 >= kilo_bytes => format!("{:.*} KB", 2, $n as f64 / kilo_bytes),
             _ => format!("{:.*} B", 0, $n),
         }
@@ -139,9 +145,9 @@ impl Bar {
                 spinner: Spinner::new(type_spinner::get_spinner(Spinners::Point)),
                 front_colored: "".to_string(),
                 back_colored: "".to_string(),
-                position: 0
+                position: 0,
             },
-            theme: Default::default()
+            theme: Default::default(),
         }
     }
 
@@ -223,7 +229,7 @@ impl Bar {
         self.add(1)
     }
 
-    /// Set units, default is simple numbers
+    /// Set units, default is `Units::Default`
     ///
     /// # Examples
     ///
@@ -246,17 +252,46 @@ impl Bar {
     /// use std::fs::File;
     /// use std::io;
     /// use rpb::bar::Bar;
-    /// fn test () -> io::Result<()> {
-    /// let source = File::open("src.txt")?;
-    /// let mut target = File::create("tgt.txt")?;
-    /// let bar = Bar::new(source.metadata()?.len() as i64);
-    /// io::copy(&mut bar.reader(source), &mut target).unwrap();
-    /// Ok(())
+    /// use rpb::bar::Units;
+    ///
+    /// fn main () -> io::Result<()> {
+    ///     let sre = File::open("src.txt")?;
+    ///     let mut tgt = File::create("tgt.txt")?;
+    ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
+    ///     bar.set_unit(Units::Bytes);
+    ///     io::copy(&mut bar.reader(src), &mut tgt).unwrap();
+    ///     Ok(())
     /// }
     /// ```
     pub fn reader<R: io::Read>(&self, read: R) -> BarIter<R> {
-        BarIter{
+        BarIter {
             it: read,
+            bar: self.clone(),
+        }
+    }
+
+    /// Wraps an [`io::Write`] with the progress bar
+    ///
+    /// # Example:
+    ///
+    /// ```rust
+    /// use std::fs::File;
+    /// use std::io;
+    /// use rpb::bar::Bar;
+    /// use rpb::bar::Units;
+    ///
+    /// fn main () -> io::Result<()> {
+    ///     let sre = File::open("src.txt")?;
+    ///     let mut tgt = File::create("tgt.txt")?;
+    ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
+    ///     bar.set_unit(Units::Bytes);
+    ///     io::copy(&mut src, &mut bar.writer(tgt)).unwrap();
+    ///     Ok(())
+    /// }
+    /// ```
+    pub fn writer<R: io::Write>(&self, write: R) -> BarIter<R> {
+        BarIter {
+            it: write,
             bar: self.clone(),
         }
     }
@@ -315,15 +350,14 @@ impl Bar {
                 units.push(format!("{:.*}it/s", 2, it_per_s));
                 current.push(format!("{:.*}", 2, curr));
                 total.push(format!("{:.*}", 2, tot));
-
-            },
+            }
             Units::Bytes => {
                 let curr = self.state.current;
                 let tot = self.option.total;
                 units.push(format!("{}/s", unit_fmt!(it_per_s)));
                 current.push(format!("{}", unit_fmt!(curr)));
                 total.push(format!("{}", unit_fmt!(tot)));
-            },
+            }
         };
 
         format!(

@@ -1,6 +1,6 @@
+use rpb::bar::Bar;
 use std::fs::File;
 use std::io;
-use rpb::bar::Bar;
 
 fn main() -> io::Result<()> {
     let source = File::open("flashlab_indicateurs_v2.sql")?;
