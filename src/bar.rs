@@ -284,6 +284,8 @@ impl Bar {
     fn render_right_bar(&mut self) -> String {
         let mut white_space = self.theme.bar_width;
         let mut units = Vec::new();
+        let mut current = Vec::new();
+        let mut total = Vec::new();
 
         if self.state.current >= 1 {
             white_space -= self.state.current_graph_rate as usize;
@@ -307,8 +309,21 @@ impl Bar {
         }
 
         match self.option.unit {
-            Units::Default => units.push(format!("{:.*}it/s", 2, it_per_s)),
-            Units::Bytes => units.push(format!("{}/s", unit_fmt!(it_per_s))),
+            Units::Default => {
+                let curr = self.state.current;
+                let tot = self.option.total;
+                units.push(format!("{:.*}it/s", 2, it_per_s));
+                current.push(format!("{:.*}", 2, curr));
+                total.push(format!("{:.*}", 2, tot));
+
+            },
+            Units::Bytes => {
+                let curr = self.state.current;
+                let tot = self.option.total;
+                units.push(format!("{}/s", unit_fmt!(it_per_s)));
+                current.push(format!("{}", unit_fmt!(curr)));
+                total.push(format!("{}", unit_fmt!(tot)));
+            },
         };
 
         format!(
@@ -321,8 +336,8 @@ impl Bar {
             format::convert(time_elapsed),
             format::convert(remaining_time),
             units.into_iter().map(|x| x).collect::<String>(),
-            self.state.current,
-            self.option.total
+            current.into_iter().map(|x| x).collect::<String>(),
+            total.into_iter().map(|x| x).collect::<String>(),
         )
     }
 
@@ -392,6 +407,7 @@ impl Bar {
 //     }
 // }
 //
+// // Implement io::Reader
 // impl Read for Bar {
 //     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
 //         let n = buf.len();
