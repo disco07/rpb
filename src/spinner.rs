@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub struct Spinner {
     frames: Vec<&'static str>,
 }

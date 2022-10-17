@@ -1,23 +1,33 @@
 use crate::color::Colorizer;
+use crate::iterator::BarIter;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
+use std::fmt::{Debug, Formatter};
+use std::io;
 use std::time::Instant;
 
 macro_rules! unit_fmt {
     ($n: ident) => {{
         let kilo_bytes = 1024_f64;
         match $n {
-            $n if $n as f64 >= kilo_bytes.powf(4_f64) => format!("{:.*} TB", 2, $n as f64 / kilo_bytes.powf(4_f64)),
-            $n if $n as f64 >= kilo_bytes.powf(3_f64) => format!("{:.*} GB", 2, $n as f64 / kilo_bytes.powf(3_f64)),
-            $n if $n as f64 >= kilo_bytes.powf(2_f64) => format!("{:.*} MB", 2, $n as f64 / kilo_bytes.powf(2_f64)),
+            $n if $n as f64 >= kilo_bytes.powf(4_f64) => {
+                format!("{:.*} TB", 2, $n as f64 / kilo_bytes.powf(4_f64))
+            }
+            $n if $n as f64 >= kilo_bytes.powf(3_f64) => {
+                format!("{:.*} GB", 2, $n as f64 / kilo_bytes.powf(3_f64))
+            }
+            $n if $n as f64 >= kilo_bytes.powf(2_f64) => {
+                format!("{:.*} MB", 2, $n as f64 / kilo_bytes.powf(2_f64))
+            }
             $n if $n as f64 >= kilo_bytes => format!("{:.*} KB", 2, $n as f64 / kilo_bytes),
             _ => format!("{:.*} B", 0, $n),
         }
     }};
 }
 
+#[derive(Clone)]
 pub struct Bar {
     desc: String,
     state: State,
@@ -25,6 +35,7 @@ pub struct Bar {
     theme: Styles,
 }
 
+#[derive(Clone)]
 struct State {
     percent: f64,
     current: i64,
@@ -33,13 +44,13 @@ struct State {
 
 // Output type format, indicate which format wil be used in
 // the speed box.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Units {
     Default,
     Bytes,
 }
 
-#[allow(dead_code)]
+#[derive(Clone)]
 struct Option {
     total: i64,
     unit: Units,
@@ -71,6 +82,12 @@ impl Option {
             back_colored: "".to_string(),
             position: 0,
         }
+    }
+}
+
+impl Debug for Bar {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Bar").finish()
     }
 }
 
@@ -128,9 +145,9 @@ impl Bar {
                 spinner: Spinner::new(type_spinner::get_spinner(Spinners::Point)),
                 front_colored: "".to_string(),
                 back_colored: "".to_string(),
-                position: 0
+                position: 0,
             },
-            theme: Default::default()
+            theme: Default::default(),
         }
     }
 
@@ -212,7 +229,7 @@ impl Bar {
         self.add(1)
     }
 
-    /// Set units, default is simple numbers
+    /// Set units, default is `Units::Default`
     ///
     /// # Examples
     ///
@@ -225,6 +242,58 @@ impl Bar {
     /// ```
     pub fn set_unit(&mut self, u: Units) {
         self.option.unit = u;
+    }
+
+    /// Wraps an [`io::Read`] with the progress bar
+    ///
+    /// # Example:
+    ///
+    /// ```rust
+    /// use std::fs::File;
+    /// use std::io;
+    /// use rpb::bar::Bar;
+    /// use rpb::bar::Units;
+    ///
+    /// fn main () -> io::Result<()> {
+    ///     let sre = File::open("src.txt")?;
+    ///     let mut tgt = File::create("tgt.txt")?;
+    ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
+    ///     bar.set_unit(Units::Bytes);
+    ///     io::copy(&mut bar.reader(src), &mut tgt).unwrap();
+    ///     Ok(())
+    /// }
+    /// ```
+    pub fn reader<R: io::Read>(&self, read: R) -> BarIter<R> {
+        BarIter {
+            it: read,
+            bar: self.clone(),
+        }
+    }
+
+    /// Wraps an [`io::Write`] with the progress bar
+    ///
+    /// # Example:
+    ///
+    /// ```rust
+    /// use std::fs::File;
+    /// use std::io;
+    /// use rpb::bar::Bar;
+    /// use rpb::bar::Units;
+    ///
+    /// fn main () -> io::Result<()> {
+    ///     let sre = File::open("src.txt")?;
+    ///     let mut tgt = File::create("tgt.txt")?;
+    ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
+    ///     bar.set_unit(Units::Bytes);
+    ///     io::copy(&mut src, &mut bar.writer(tgt)).unwrap();
+    ///     Ok(())
+    /// }
+    /// ```
+    pub fn writer<R: io::Write>(&self, write: R) -> BarIter<R> {
+        BarIter {
+            it: write,
+            bar: self.clone(),
+        }
     }
 
     fn render_left_bar(&mut self) -> String {
@@ -250,6 +319,8 @@ impl Bar {
     fn render_right_bar(&mut self) -> String {
         let mut white_space = self.theme.bar_width;
         let mut units = Vec::new();
+        let mut current = Vec::new();
+        let mut total = Vec::new();
 
         if self.state.current >= 1 {
             white_space -= self.state.current_graph_rate as usize;
@@ -273,8 +344,20 @@ impl Bar {
         }
 
         match self.option.unit {
-            Units::Default => units.push(format!("{:.*}it/s", 2, it_per_s)),
-            Units::Bytes => units.push(format!("{}/s", unit_fmt!(it_per_s))),
+            Units::Default => {
+                let curr = self.state.current;
+                let tot = self.option.total;
+                units.push(format!("{:.*}it/s", 2, it_per_s));
+                current.push(format!("{:.*}", 2, curr));
+                total.push(format!("{:.*}", 2, tot));
+            }
+            Units::Bytes => {
+                let curr = self.state.current;
+                let tot = self.option.total;
+                units.push(format!("{}/s", unit_fmt!(it_per_s)));
+                current.push(format!("{}", unit_fmt!(curr)));
+                total.push(format!("{}", unit_fmt!(tot)));
+            }
         };
 
         format!(
@@ -287,8 +370,8 @@ impl Bar {
             format::convert(time_elapsed),
             format::convert(remaining_time),
             units.into_iter().map(|x| x).collect::<String>(),
-            self.state.current,
-            self.option.total
+            current.into_iter().map(|x| x).collect::<String>(),
+            total.into_iter().map(|x| x).collect::<String>(),
         )
     }
 
