@@ -248,7 +248,7 @@ impl Bar {
     ///
     /// # Example:
     ///
-    /// ```rust
+    /// ```rust, no_run
     /// use std::fs::File;
     /// use std::io;
     /// use rpb::bar::Bar;
@@ -274,7 +274,7 @@ impl Bar {
     ///
     /// # Example:
     ///
-    /// ```rust
+    /// ```rust, no_run
     /// use std::fs::File;
     /// use std::io;
     /// use rpb::bar::Bar;
