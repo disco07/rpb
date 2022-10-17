@@ -395,27 +395,6 @@ impl Bar {
     }
 }
 
-// // Implement io::Writer
-// impl Write for Bar {
-//     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
-//         let n = buf.len();
-//         self.add(n);
-//         Ok(n)
-//     }
-//     fn flush(&mut self) -> io::Result<()> {
-//         Ok(())
-//     }
-// }
-//
-// // Implement io::Reader
-// impl Read for Bar {
-//     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
-//         let n = buf.len();
-//         self.add(n);
-//         Ok(n)
-//     }
-// }
-
 fn get_percent(current: &i64, total: &i64) -> f64 {
     100.0 * (*current as f64) / (*total as f64)
 }
