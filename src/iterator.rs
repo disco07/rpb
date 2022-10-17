@@ -25,4 +25,10 @@ impl<W: io::Write> io::Write for BarIter<W> {
     fn flush(&mut self) -> io::Result<()> {
         Ok(())
     }
+
+    fn write_all(&mut self, buf: &[u8]) -> io::Result<()> {
+        let n = self.it.write(buf)?;
+        self.bar.add(n);
+        Ok(())
+    }
 }
