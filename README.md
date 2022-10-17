@@ -7,12 +7,12 @@ A simple progress bar for Rust 🦀 projects. I created that because there was a
 ## Installation
 Add from command line.
 ```
-cargo add rpb@0.1.4
+cargo add rpb@0.1.5
 ```
 Or add this to your Cargo.toml file.
 ```
 [dependencies]
-rpb = "0.1.4"
+rpb = "0.1.5"
 
 # Or add from github main branch.
 rpb = { git = "https://github.com/disco07/rpb.git", branch = "main" }
@@ -38,6 +38,23 @@ fn main() {
 ![Basic bar](images/basic.gif)
 [examples/custom.rs](examples/custom.rs)
 ![Custom bar](images/custom.gif)
+
+### I/O operations
+The `rpb` implements an `io writer` and `io reader` so it can automatically detect the number of bytes written to a stream.
+```rust
+use rpb::bar::Bar;
+use std::fs::File;
+use std::io;
+
+fn main() -> io::Result<()> {
+    let source = File::open("indicateurs_v2.sql")?;
+    let mut target = File::create("src.sql")?;
+    let bar = Bar::default_bytes(source.metadata()?.len() as i64, "downloading");
+    io::copy(&mut bar.reader(source), &mut target).unwrap();
+    Ok(())
+}
+```
+![Custom bar](images/download.gif)
 
 ## Contributing 🤝
 Contributions, issues, and feature requests are welcome!
