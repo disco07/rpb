@@ -1,9 +1,12 @@
+use std::fmt::{Debug, Formatter};
+use std::io;
 use crate::color::Colorizer;
 use crate::spinner::Spinner;
 use crate::styles::{Styles, Themes};
 use crate::type_spinner::Spinners;
 use crate::{format, type_spinner};
 use std::time::Instant;
+use crate::iterator::BarIter;
 
 macro_rules! unit_fmt {
     ($n: ident) => {{
@@ -18,6 +21,7 @@ macro_rules! unit_fmt {
     }};
 }
 
+#[derive(Clone)]
 pub struct Bar {
     desc: String,
     state: State,
@@ -25,6 +29,7 @@ pub struct Bar {
     theme: Styles,
 }
 
+#[derive(Clone)]
 struct State {
     percent: f64,
     current: i64,
@@ -33,13 +38,13 @@ struct State {
 
 // Output type format, indicate which format wil be used in
 // the speed box.
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Units {
     Default,
     Bytes,
 }
 
-#[allow(dead_code)]
+#[derive(Clone)]
 struct Option {
     total: i64,
     unit: Units,
@@ -71,6 +76,12 @@ impl Option {
             back_colored: "".to_string(),
             position: 0,
         }
+    }
+}
+
+impl Debug for Bar {
+    fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Bar").finish()
     }
 }
 
@@ -227,6 +238,29 @@ impl Bar {
         self.option.unit = u;
     }
 
+    /// Wraps an [`io::Read`] with the progress bar
+    ///
+    /// # Example:
+    ///
+    /// ```rust
+    /// use std::fs::File;
+    /// use std::io;
+    /// use rpb::bar::Bar;
+    /// fn test () -> io::Result<()> {
+    /// let source = File::open("src.txt")?;
+    /// let mut target = File::create("tgt.txt")?;
+    /// let bar = Bar::new(source.metadata()?.len() as i64);
+    /// io::copy(&mut bar.reader(source), &mut target).unwrap();
+    /// Ok(())
+    /// }
+    /// ```
+    pub fn reader<R: io::Read>(&self, read: R) -> BarIter<R> {
+        BarIter{
+            it: read,
+            bar: self.clone(),
+        }
+    }
+
     fn render_left_bar(&mut self) -> String {
         self.state.percent = get_percent(&self.state.current, &self.option.total);
 
@@ -345,6 +379,26 @@ impl Bar {
         self.print_bar(format!("{}{}{}", lbar, mbar, rbar))
     }
 }
+
+// // Implement io::Writer
+// impl Write for Bar {
+//     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
+//         let n = buf.len();
+//         self.add(n);
+//         Ok(n)
+//     }
+//     fn flush(&mut self) -> io::Result<()> {
+//         Ok(())
+//     }
+// }
+//
+// impl Read for Bar {
+//     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
+//         let n = buf.len();
+//         self.add(n);
+//         Ok(n)
+//     }
+// }
 
 fn get_percent(current: &i64, total: &i64) -> f64 {
     100.0 * (*current as f64) / (*total as f64)

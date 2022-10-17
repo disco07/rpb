@@ -5,6 +5,7 @@ pub enum Themes {
     ColoredMedium,
 }
 
+#[derive(Clone)]
 pub struct Styles {
     pub rate: String,
     pub white_space: String,
