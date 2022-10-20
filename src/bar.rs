@@ -168,7 +168,7 @@ impl Bar {
                 self.theme.white_space = " ".to_string();
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
-                self.theme.bar_width = 80;
+                self.theme.bar_width = 70;
                 self.set_spinner(Spinners::Point);
             }
             Themes::ColoredMedium => {
@@ -176,7 +176,7 @@ impl Bar {
                 self.theme.white_space = "█".to_string();
                 self.theme.bar_start = '|';
                 self.theme.bar_end = '|';
-                self.theme.bar_width = 80;
+                self.theme.bar_width = 70;
                 self.option.front_colored = "#021B79".to_string();
                 self.set_spinner(Spinners::Weather);
             }
@@ -185,7 +185,7 @@ impl Bar {
                 self.theme.white_space = " ".to_string();
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
-                self.theme.bar_width = 80;
+                self.theme.bar_width = 70;
                 self.set_spinner(Spinners::Dots3);
             }
             Themes::ColoredSmall => {
@@ -193,7 +193,7 @@ impl Bar {
                 self.theme.white_space = "━".to_string();
                 self.theme.bar_start = ' ';
                 self.theme.bar_end = ' ';
-                self.theme.bar_width = 80;
+                self.theme.bar_width = 70;
                 self.option.front_colored = "#0f3443".to_string();
                 self.set_spinner(Spinners::Dots4);
             }

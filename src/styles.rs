@@ -31,7 +31,7 @@ impl Default for Styles {
             bar_type: '█',
             bar_start: '|',
             bar_end: '|',
-            bar_width: 80,
+            bar_width: 60,
         }
     }
 }
