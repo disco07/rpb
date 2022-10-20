@@ -40,6 +40,8 @@ struct State {
     percent: f64,
     current: i64,
     current_graph_rate: isize,
+    set_clear: bool,
+    clear_length: usize,
 }
 
 // Output type format, indicate which format wil be used in
@@ -67,6 +69,8 @@ impl State {
             current: 0,
             percent: get_percent(&0, &max),
             current_graph_rate: 0,
+            set_clear: true,
+            clear_length: 0,
         }
     }
 }
@@ -360,8 +364,6 @@ impl Bar {
             }
         };
 
-        let mut prev_f_it_len: usize = 0;
-
         let it = format!("[{}-{}, {}, {}/{}]",
                          format::convert(time_elapsed),
                          format::convert(remaining_time),
@@ -369,12 +371,18 @@ impl Bar {
                          current.into_iter().map(|x| x).collect::<String>(),
                          total.into_iter().map(|x| x).collect::<String>(),);
         let f_it_len = it.len();
+        //
+        // if self.state.set_clear {
+        //     self.state.clear_length = f_it_len;
+        //     self.state.set_clear = false;
+        // }
+        //
+        // if self.state.clear_length != f_it_len {
+        //     f_it_len -= self.state.clear_length;
+        // }
+        // println!("{}", self.state.clear_length);
 
-        if f_it_len != prev_f_it_len {
-            prev_f_it_len = f_it_len;
-        }
-
-        let clear = " ".repeat(0);
+        let clear = " ".repeat(2);
 
         format!(
             "{}{} {}  {}{}",
