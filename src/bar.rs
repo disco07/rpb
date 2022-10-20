@@ -360,18 +360,31 @@ impl Bar {
             }
         };
 
+        let mut prev_f_it_len: usize = 0;
+
+        let it = format!("[{}-{}, {}, {}/{}]",
+                         format::convert(time_elapsed),
+                         format::convert(remaining_time),
+                         units.into_iter().map(|x| x).collect::<String>(),
+                         current.into_iter().map(|x| x).collect::<String>(),
+                         total.into_iter().map(|x| x).collect::<String>(),);
+        let f_it_len = it.len();
+
+        if f_it_len != prev_f_it_len {
+            prev_f_it_len = f_it_len;
+        }
+
+        let clear = " ".repeat(0);
+
         format!(
-            "{}{} {}  [{}-{}, {}, {}/{}]",
+            "{}{} {}  {}{}",
             background,
             self.theme.bar_end.to_string().as_str(),
             self.option
                 .spinner
                 .spinning_cursor(self.state.current as usize),
-            format::convert(time_elapsed),
-            format::convert(remaining_time),
-            units.into_iter().map(|x| x).collect::<String>(),
-            current.into_iter().map(|x| x).collect::<String>(),
-            total.into_iter().map(|x| x).collect::<String>(),
+            it,
+            clear,
         )
     }
 
