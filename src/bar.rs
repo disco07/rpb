@@ -7,6 +7,7 @@ use crate::{format, type_spinner};
 use std::fmt::{Debug, Formatter};
 use std::io;
 use std::time::Instant;
+use terminal_size::{terminal_size, Width};
 
 macro_rules! unit_fmt {
     ($n: ident) => {{
@@ -59,6 +60,7 @@ struct Option {
     front_colored: String,
     back_colored: String,
     position: u32,
+    bar_len: u32,
 }
 
 impl State {
@@ -81,6 +83,7 @@ impl Option {
             front_colored: "".to_string(),
             back_colored: "".to_string(),
             position: 0,
+            bar_len: 0,
         }
     }
 }
@@ -146,6 +149,7 @@ impl Bar {
                 front_colored: "".to_string(),
                 back_colored: "".to_string(),
                 position: 0,
+                bar_len: 0,
             },
             theme: Default::default(),
         }
@@ -211,7 +215,8 @@ impl Bar {
     /// bar.set_position(1)
     /// ```
     pub fn set_position(&mut self, position: u32) {
-        self.option.position = position
+        self.option.position = position;
+        self.add(0)
     }
 
     /// Sets description of progress bar.
@@ -222,6 +227,23 @@ impl Bar {
     /// Sets spinner of progress bar.
     pub fn set_spinner(&mut self, spinner: Spinners) {
         self.option.spinner = Spinner::new(type_spinner::get_spinner(spinner))
+    }
+
+    /// Clear current bar.
+    pub fn clear(&mut self) {
+        columns = self.bar_length as usize;
+        eprint!("{}", format_args!("\r{}\r", " ".repeat(columns)));
+    }
+
+    /// Get terminal width, height, size.
+    fn width(&mut self) -> usize {
+        if let Some(w) = self.width {
+            w
+        } else if let Some((Width(w), _)) = terminal_size() {
+            w as usize
+        } else {
+            80
+        }
     }
 
     /// Increment current value of one.
@@ -365,9 +387,9 @@ impl Bar {
                          format::convert(remaining_time),
                          units.into_iter().map(|x| x).collect::<String>(),
                          current.into_iter().map(|x| x).collect::<String>(),
-                         total.into_iter().map(|x| x).collect::<String>(),);
+                         total.into_iter().map(|x| x).collect::<String>(), );
 
-        let clear = " ".repeat(10);
+        let clear = " ".repeat(5);
 
         format!(
             "{}{} {}  {}{}",
@@ -402,6 +424,8 @@ impl Bar {
         let lbar = self.render_left_bar();
         let mbar = self.render_middle_bar();
         let rbar = self.render_right_bar();
+
+        self.option.bar_len = (lbar.chars().count() + lbar.chars().count() + lbar.chars().count()) as u32;
 
         return (lbar, mbar, rbar);
     }
