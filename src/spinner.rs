@@ -9,7 +9,8 @@ impl Spinner {
     }
 
     pub fn spinning_cursor(&self, index: usize) -> String {
-        let frame = self.frames.get(index % self.frames.len()).unwrap();
+        let iter = (2*index)%self.frames.len();
+        let frame = self.frames.get(iter as usize).unwrap();
         frame.to_string()
     }
 }

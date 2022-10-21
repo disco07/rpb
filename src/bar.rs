@@ -7,7 +7,6 @@ use crate::{format, type_spinner};
 use std::fmt::{Debug, Formatter};
 use std::io;
 use std::time::Instant;
-use terminal_size::{terminal_size, Width};
 
 macro_rules! unit_fmt {
     ($n: ident) => {{
@@ -229,22 +228,11 @@ impl Bar {
         self.option.spinner = Spinner::new(type_spinner::get_spinner(spinner))
     }
 
-    /// Clear current bar.
-    pub fn clear(&mut self) {
-        columns = self.bar_length as usize;
-        eprint!("{}", format_args!("\r{}\r", " ".repeat(columns)));
-    }
-
-    /// Get terminal width, height, size.
-    fn width(&mut self) -> usize {
-        if let Some(w) = self.width {
-            w
-        } else if let Some((Width(w), _)) = terminal_size() {
-            w as usize
-        } else {
-            80
-        }
-    }
+    //// Clear current bar.
+    //pub fn clear(&mut self) {
+    //    let length = self.bar_length as usize;
+    //    eprint!("\r{}\r", " ".repeat(length));
+    //}
 
     /// Increment current value of one.
     pub fn inc(&mut self) {
@@ -397,7 +385,7 @@ impl Bar {
             self.theme.bar_end.to_string().as_str(),
             self.option
                 .spinner
-                .spinning_cursor(self.state.current as usize),
+                .spinning_cursor(time_elapsed as usize),
             it,
             clear,
         )
