@@ -367,7 +367,7 @@ impl Bar {
                          current.into_iter().map(|x| x).collect::<String>(),
                          total.into_iter().map(|x| x).collect::<String>(),);
 
-        let clear = " ".repeat(10);
+        let clear = " ".repeat(5);
 
         format!(
             "{}{} {}  {}{}",
