@@ -335,12 +335,12 @@ impl Bar {
         if self.state.current >= 1 {
             white_space -= self.state.current_graph_rate as usize;
         }
-        let time_elapsed = self.option.start_time.elapsed().as_secs();
-        let remaining_time = time_elapsed * (self.option.total - self.state.current) as u64
+        let time_elapsed = self.option.start_time.elapsed().as_secs_f32();
+        let remaining_time = (time_elapsed as u64) * (self.option.total - self.state.current) as u64
             / self.state.current as u64;
         let mut it_per_s: u64 = 0;
-        if time_elapsed >= 1 {
-            it_per_s = (self.state.current as u64) / time_elapsed;
+        if time_elapsed >= 1_f32 {
+            it_per_s = (self.state.current as u64) / time_elapsed as u64;
         }
         let background: String;
         if self.option.back_colored != "" {
@@ -372,7 +372,7 @@ impl Bar {
 
         let it = format!(
             "[{}-{}, {}, {}/{}]",
-            format::convert(time_elapsed),
+            format::convert(time_elapsed as u64),
             format::convert(remaining_time),
             units.into_iter().map(|x| x).collect::<String>(),
             current.into_iter().map(|x| x).collect::<String>(),
@@ -383,7 +383,7 @@ impl Bar {
             "{}{} {}  {} ",
             background,
             self.theme.bar_end.to_string().as_str(),
-            self.option.spinner.spinning_cursor(time_elapsed as usize),
+            self.option.spinner.spinning_cursor(time_elapsed),
             it,
         )
     }
