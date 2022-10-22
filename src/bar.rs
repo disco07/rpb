@@ -208,7 +208,7 @@ impl Bar {
     ///
     ///  # Example
     ///
-    /// ```rust
+    /// ```rust, no_run
     /// use rpb::bar::Bar;
     /// let mut bar = Bar::new(100);
     /// bar.set_position(1)
@@ -336,7 +336,8 @@ impl Bar {
             white_space -= self.state.current_graph_rate as usize;
         }
         let time_elapsed = self.option.start_time.elapsed().as_secs_f32();
-        let remaining_time = (time_elapsed as u64) * (self.option.total - self.state.current) as u64
+        let remaining_time = (time_elapsed as u64)
+            * (self.option.total - self.state.current) as u64
             / self.state.current as u64;
         let mut it_per_s: u64 = 0;
         if time_elapsed >= 1_f32 {
