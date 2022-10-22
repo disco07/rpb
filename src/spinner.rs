@@ -8,8 +8,9 @@ impl Spinner {
         Self { frames }
     }
 
-    pub fn spinning_cursor(&self, index: usize) -> String {
-        let frame = self.frames.get(index % self.frames.len()).unwrap();
+    pub fn spinning_cursor(&self, elapsed_time: f32) -> String {
+        let iter = (elapsed_time * 4_f32) / (30.0 / 1000.0);
+        let frame = self.frames.get(iter as usize % self.frames.len()).unwrap();
         frame.to_string()
     }
 }
