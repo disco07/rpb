@@ -370,24 +370,21 @@ impl Bar {
             }
         };
 
-        let it = format!("[{}-{}, {}, {}/{}]",
-                         format::convert(time_elapsed),
-                         format::convert(remaining_time),
-                         units.into_iter().map(|x| x).collect::<String>(),
-                         current.into_iter().map(|x| x).collect::<String>(),
-                         total.into_iter().map(|x| x).collect::<String>(), );
-
-        let clear = " ".repeat(5);
+        let it = format!(
+            "[{}-{}, {}, {}/{}]",
+            format::convert(time_elapsed),
+            format::convert(remaining_time),
+            units.into_iter().map(|x| x).collect::<String>(),
+            current.into_iter().map(|x| x).collect::<String>(),
+            total.into_iter().map(|x| x).collect::<String>(),
+        );
 
         format!(
-            "{}{} {}  {}{}",
+            "{}{} {}  {} ",
             background,
             self.theme.bar_end.to_string().as_str(),
-            self.option
-                .spinner
-                .spinning_cursor(time_elapsed as usize),
+            self.option.spinner.spinning_cursor(time_elapsed as usize),
             it,
-            clear,
         )
     }
 
@@ -413,7 +410,8 @@ impl Bar {
         let mbar = self.render_middle_bar();
         let rbar = self.render_right_bar();
 
-        self.option.bar_len = (lbar.chars().count() + lbar.chars().count() + lbar.chars().count()) as u32;
+        self.option.bar_len =
+            (lbar.chars().count() + lbar.chars().count() + lbar.chars().count()) as u32;
 
         return (lbar, mbar, rbar);
     }
