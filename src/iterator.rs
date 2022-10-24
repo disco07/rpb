@@ -7,7 +7,7 @@ pub struct BarIter<T> {
     pub bar: Bar,
 }
 
-impl<R: io::Read> io::Read for BarIter<R> {
+impl<R> io::Read for BarIter<R> where R: io::Read{
     fn read(&mut self, buf: &mut [u8]) -> io::Result<usize> {
         let n = self.it.read(buf)?;
         self.bar.add(n);
@@ -15,7 +15,7 @@ impl<R: io::Read> io::Read for BarIter<R> {
     }
 }
 
-impl<W: io::Write> io::Write for BarIter<W> {
+impl<W> io::Write for BarIter<W> where W: io::Write{
     fn write(&mut self, buf: &[u8]) -> io::Result<usize> {
         let n = self.it.write(buf)?;
         self.bar.add(n);
