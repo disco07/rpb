@@ -84,7 +84,7 @@ impl Option {
             back_colored: "".to_string(),
             position: 0,
             bar_len: 0,
-            is_multibar: false
+            is_multibar: false,
         }
     }
 }
@@ -151,7 +151,7 @@ impl Bar {
                 back_colored: "".to_string(),
                 position: 0,
                 bar_len: 0,
-                is_multibar: false
+                is_multibar: false,
             },
             theme: Default::default(),
         }

@@ -1,10 +1,10 @@
+use crate::bar::Bar;
+use crossbeam::channel::{unbounded, Receiver, Sender};
 use std::io::{Stdout, Write};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
-use crossbeam::channel::{Receiver, Sender, unbounded};
-use crate::bar::Bar;
 
-pub struct MultiBar{
+pub struct MultiBar {
     state: Mutex<State>,
     n_bars: AtomicUsize,
     chan: (Sender<WriteMsg>, Receiver<WriteMsg>),
@@ -17,9 +17,7 @@ struct State {
 }
 
 impl MultiBar {
-    pub fn new() {
-        
-    }
+    pub fn new() {}
 }
 
 impl MultiBar {
@@ -38,10 +36,10 @@ impl MultiBar {
             state: Mutex::new(State {
                 lines: vec![],
                 n_lines: 0,
-                handle
+                handle,
             }),
             n_bars: Default::default(),
-            chan: unbounded()
+            chan: unbounded(),
         }
     }
 
@@ -53,9 +51,7 @@ impl MultiBar {
 
         self.n_bars.fetch_add(1, Ordering::SeqCst);
 
-        let mut b = Bar::new(
-            total,
-        );
+        let mut b = Bar::new(total);
 
         b.option.is_multibar = true;
         b.add(0);
