@@ -4,23 +4,33 @@ use std::io::{Stdout, Write};
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 
-pub struct MultiBar {
-    state: Mutex<State>,
+pub struct MultiBar<T: Write> {
+    state: Mutex<State<T>>,
     n_bars: AtomicUsize,
-    chan: (Sender<WriteMsg>, Receiver<WriteMsg>),
+    channel: (Sender<WriteMsg>, Receiver<WriteMsg>),
 }
 
-struct State {
+struct State<T: Write> {
     lines: Vec<String>,
     n_lines: usize,
     handle: T,
 }
 
-impl MultiBar {
-    pub fn new() {}
+// WriteMsg is the message format used to communicate
+// between MultiBar and its bars
+struct WriteMsg {
+    done: bool,
+    level: usize,
+    string: String,
 }
 
-impl MultiBar {
+impl MultiBar<Stdout> {
+    pub fn new() -> MultiBar<Stdout> {
+        MultiBar::on(std::io::Stdout)
+    }
+}
+
+impl<T> MultiBar<T> where T: Write {
     /// Create a new MultiBar with an arbitrary writer.
     ///
     /// # Example
@@ -31,7 +41,7 @@ impl MultiBar {
     ///
     /// let mut mb = MultiBar::on(stderr());
     /// ```
-    pub fn on(handle: T) -> MultiBar {
+    pub fn on(handle: T) -> MultiBar<T> {
         Self {
             state: Mutex::new(State {
                 lines: vec![],
@@ -39,7 +49,7 @@ impl MultiBar {
                 handle,
             }),
             n_bars: Default::default(),
-            chan: unbounded(),
+            channel: unbounded(),
         }
     }
 
