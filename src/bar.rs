@@ -31,14 +31,14 @@ macro_rules! unit_fmt {
 pub struct Bar {
     desc: String,
     state: State,
-    option: Option,
+    pub(crate) option: Option,
     theme: Styles,
 }
 
 #[derive(Clone)]
 struct State {
     percent: f64,
-    current: i64,
+    current: u64,
     current_graph_rate: isize,
 }
 
@@ -52,7 +52,7 @@ pub enum Units {
 
 #[derive(Clone)]
 struct Option {
-    total: i64,
+    total: u64,
     unit: Units,
     start_time: Instant,
     spinner: Spinner,
@@ -60,10 +60,11 @@ struct Option {
     back_colored: String,
     position: u32,
     bar_len: u32,
+    pub is_multibar: bool,
 }
 
 impl State {
-    fn new(max: i64) -> State {
+    fn new(max: u64) -> State {
         Self {
             current: 0,
             percent: get_percent(&0, &max),
@@ -73,7 +74,7 @@ impl State {
 }
 
 impl Option {
-    fn new(total: i64, time: Instant) -> Option {
+    fn new(total: u64, time: Instant) -> Option {
         Self {
             total,
             unit: Units::Default,
@@ -83,6 +84,7 @@ impl Option {
             back_colored: "".to_string(),
             position: 0,
             bar_len: 0,
+            is_multibar: false,
         }
     }
 }
@@ -119,7 +121,7 @@ impl Bar {
     /// use rpb::bar::Bar;
     /// let mut bar = Bar::new(100);
     /// ```
-    pub fn new(max: i64) -> Self {
+    pub fn new(max: u64) -> Self {
         Self {
             desc: "".to_string(),
             state: State::new(max),
@@ -136,7 +138,7 @@ impl Bar {
     /// use rpb::bar::Bar;
     /// let mut bar = Bar::default_bytes(100, "downloading");
     /// ```
-    pub fn default_bytes(max_bytes: i64, desc: &str) -> Bar {
+    pub fn default_bytes(max_bytes: u64, desc: &str) -> Bar {
         Self {
             desc: desc.to_string(),
             state: State::new(max_bytes),
@@ -149,6 +151,7 @@ impl Bar {
                 back_colored: "".to_string(),
                 position: 0,
                 bar_len: 0,
+                is_multibar: false,
             },
             theme: Default::default(),
         }
@@ -267,7 +270,7 @@ impl Bar {
     /// fn main () -> io::Result<()> {
     ///     let src = File::open("src.txt")?;
     ///     let mut tgt = File::create("tgt.txt")?;
-    ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
+    ///     let mut bar = Bar::new(src.metadata()?.len() as u64);
     ///     bar.set_unit(Units::Bytes);
     ///     io::copy(&mut bar.reader(src), &mut tgt).unwrap();
     ///     Ok(())
@@ -293,7 +296,7 @@ impl Bar {
     /// fn main () -> io::Result<()> {
     ///     let mut src = File::open("src.txt")?;
     ///     let mut tgt = File::create("tgt.txt")?;
-    ///     let mut bar = Bar::new(src.metadata()?.len() as i64);
+    ///     let mut bar = Bar::new(src.metadata()?.len() as u64);
     ///     bar.set_unit(Units::Bytes);
     ///     io::copy(&mut src, &mut bar.writer(tgt)).unwrap();
     ///     Ok(())
@@ -446,6 +449,6 @@ impl Bar {
     }
 }
 
-fn get_percent(current: &i64, total: &i64) -> f64 {
+fn get_percent(current: &u64, total: &u64) -> f64 {
     100.0 * (*current as f64) / (*total as f64)
 }
